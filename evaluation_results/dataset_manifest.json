@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-10-20T17:01:26.180385+00:00",
+  "generation": {
+    "seed": 42,
+    "num_normal": 12000,
+    "num_attack_per_class": 2000,
+    "attack_classes": [
+      "capacity_manipulation",
+      "coordinated_weak",
+      "inventory_manipulation",
+      "multi_source",
+      "replay_attack",
+      "sensor_spoofing"
+    ],
+    "train_ratio": 0.6,
+    "val_ratio": 0.2,
+    "test_ratio": 0.2,
+    "timestamp_policy": "deterministic dataset epoch (2026-01-01 UTC + step seconds)"
+  },
+  "splits": {
+    "train": {
+      "path": "datasets/train.jsonl",
+      "sha256": "d3acc0e816aa0181952b1063c17bc0d7528eeb239d958b5dfafcd125734a5824",
+      "records": 7200,
+      "normal_records": 7200,
+      "attack_records": 0,
+      "attack_class_counts": {}
+    },
+    "val": {
+      "path": "datasets/val.jsonl",
+      "sha256": "bf245d682d47f8d1bbabfd00102899192c03fd0ac5b79040dd0f6063e313ebe0",
+      "records": 4800,
+      "normal_records": 2400,
+      "attack_records": 2400,
+      "attack_class_counts": {
+        "capacity_manipulation": 400,
+        "coordinated_weak": 400,
+        "inventory_manipulation": 400,
+        "multi_source": 400,
+        "replay_attack": 400,
+        "sensor_spoofing": 400
+      }
+    },
+    "test": {
+      "path": "datasets/test.jsonl",
+      "sha256": "11ff544c47a509fbecc5653b2ae1ad141036fba909db112a163b9d369709e8d2",
+      "records": 12000,
+      "normal_records": 2400,
+      "attack_records": 9600,
+      "attack_class_counts": {
+        "capacity_manipulation": 1600,
+        "coordinated_weak": 1600,
+        "inventory_manipulation": 1600,
+        "multi_source": 1600,
+        "replay_attack": 1600,
+        "sensor_spoofing": 1600
+      }
+    }
+  }
+}

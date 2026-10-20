@@ -29,6 +29,23 @@ class SemanticEngine:
         self.c2_tolerance = c2_tolerance
         self.c3_temp_range = c3_temp_range
         self.c3_humidity_range = c3_humidity_range
+        self.custom_invariants: list = []
+
+    def add_invariant(self, invariant: object) -> None:
+        """Install a validated mined invariant (must expose ``check(obs, prev)``)."""
+        if not hasattr(invariant, "check"):
+            raise TypeError("Custom invariants must expose a check(obs, previous) method")
+        candidate_id = getattr(invariant, "candidate_id", None)
+        if candidate_id and any(
+            getattr(existing, "candidate_id", None) == candidate_id
+            for existing in self.custom_invariants
+        ):
+            raise ValueError(f"Invariant '{candidate_id}' is already active")
+        self.custom_invariants.append(invariant)
+
+    def clear_invariants(self) -> None:
+        """Remove all mined invariants, restoring baseline C1/C2/C3 behavior."""
+        self.custom_invariants.clear()
 
     def check_c1_capacity(self, obs: WarehouseObservation) -> ConstraintResult:
         """C1: Capacity Consistency Check.
@@ -187,13 +204,21 @@ class SemanticEngine:
         c2 = self.check_c2_inventory_flow(current_obs, previous_obs)
         c3 = self.check_c3_historical(current_obs, history)
 
-        constraints = [c1, c2, c3]
+        custom_results = []
+        for invariant in self.custom_invariants:
+            try:
+                custom_results.append(invariant.check(current_obs, previous_obs))
+            except Exception as exc:  # A broken mined rule must never stop detection.
+                logger.error("Custom invariant %s failed: %s", invariant, exc)
+
+        constraints = [c1, c2, c3] + custom_results
         violated = [c.constraint for c in constraints if c.status == "VIOLATED"]
         warnings = [c.constraint for c in constraints if c.status == "WARNING"]
 
         # Calculate semantic score in [0.0, 1.0]
         # C1 and C2 are hard operational integrity constraints
         # C3 is a supporting environmental warning
+        # Validated mined invariants are hard evidence, capped at 0.30 total.
         score = 0.0
         if "C1" in violated:
             score += 0.50
@@ -201,6 +226,11 @@ class SemanticEngine:
             score += 0.40
         if "C3" in warnings or "C3" in violated:
             score += 0.15
+        custom_violations = [
+            c for c in custom_results if c.status == "VIOLATED"
+        ]
+        if custom_violations:
+            score += 0.30
 
         semantic_score = round(min(1.0, score), 2)
 
@@ -225,6 +255,10 @@ class SemanticEngine:
             "outbound": current_obs.outbound,
             "c1_difference": c1.difference,
             "c2_difference": c2.difference,
+            "active_invariant_count": len(self.custom_invariants),
+            "custom_invariant_violations": {
+                c.constraint: c.difference for c in custom_results if c.status == "VIOLATED"
+            },
         }
 
         return SemanticResult(

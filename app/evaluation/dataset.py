@@ -5,6 +5,7 @@ strict invariant verification, zero feature data leakage, and reproducible tempo
 """
 
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
 import logging
 import random
 from typing import Any, Dict, List, Optional, Tuple
@@ -33,6 +34,13 @@ ATTACK_CLASSES = [
     "coordinated_weak",
     "multi_source",
 ]
+
+_DATASET_EPOCH = datetime(2026, 1, 1, tzinfo=timezone.utc)
+
+
+def _dataset_timestamp(step: int) -> str:
+    """Deterministic observation timestamp so split files and hashes reproduce."""
+    return (_DATASET_EPOCH + timedelta(seconds=int(step))).isoformat()
 
 
 class EvaluationRecord(BaseModel):
@@ -120,7 +128,7 @@ def generate_normal_dataset(num_samples: int = 12000, seed: int = 42) -> List[Ev
     prev_obs: Optional[WarehouseObservation] = None
 
     for i in range(num_samples):
-        obs = warehouse.step()
+        obs = warehouse.step().model_copy(update={"timestamp": _dataset_timestamp(warehouse.step_count)})
 
         # Invariant verification assertion
         is_valid, violations = verify_normal_observation_invariants(obs, prev_obs)
@@ -238,6 +246,7 @@ def generate_attack_dataset(
                 # Ensure observation step matches continuous sequential timeline
                 injected_data = injected.model_dump()
                 injected_data["step"] = base_obs.step
+                injected_data["timestamp"] = _dataset_timestamp(base_obs.step)
 
                 # Strict sanitisation: scrub ground-truth labels from the inner observation
                 injected_data["is_attack_injected"] = False

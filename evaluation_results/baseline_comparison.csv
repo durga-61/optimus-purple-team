@@ -1,0 +1,4 @@
+detector,precision,recall,f1,false_positive_rate,accuracy,evasion_rate,threshold,per_class_recall
+optimus_static,1.0,0.7693,0.8696,0.0,0.8154,0.2307,,"{""capacity_manipulation"": 1.0, ""coordinated_weak"": 0.0475, ""inventory_manipulation"": 1.0, ""multi_source"": 1.0, ""replay_attack"": 0.5681, ""sensor_spoofing"": 1.0}"
+one_class_svm,1.0,0.3333,0.5,0.0,0.4667,0.6667,18.370404877150854,"{""capacity_manipulation"": 0.0, ""coordinated_weak"": 0.0, ""inventory_manipulation"": 0.0, ""multi_source"": 1.0, ""replay_attack"": 0.0, ""sensor_spoofing"": 1.0}"
+pca,1.0,0.7499,0.8571,0.0,0.7999,0.2501,3.148127838423868e-29,"{""capacity_manipulation"": 0.5, ""coordinated_weak"": 1.0, ""inventory_manipulation"": 0.9994, ""multi_source"": 1.0, ""replay_attack"": 0.0, ""sensor_spoofing"": 1.0}"

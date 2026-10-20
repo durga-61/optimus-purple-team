@@ -119,3 +119,53 @@ Measure:
 * adaptation behavior.
 
 AI attacker results must be reported separately from the core defender evaluation.
+
+---
+
+## Experiment 11 — Trusted-Label Adaptive Fusion
+
+Learn bounded fusion weights on the validation split and compare static vs adaptive weights on held-out test data.
+
+Report:
+
+* selected weights and bounds;
+* validation F1/FPR and threshold;
+* held-out rule classification;
+* held-out risk-threshold classification;
+* whether the adapted vector was adopted or the static vector was retained.
+
+---
+
+## Experiment 12 — Dynamic Invariant Mining
+
+Discover candidates from training normals, validate them on independent validation normals/attacks, and activate approved rules.
+
+Report:
+
+* candidates discovered, validated, rejected, and active;
+* rejection reasons;
+* per-class attack detection and normal false-positive rate;
+* held-out effect of mined invariants alone and combined with adaptive fusion;
+* audit-chain validity and rollback result.
+
+---
+
+## Experiment 13 — Independent Baselines and Evasion Frontier
+
+Fit One-Class SVM and PCA on normal training data only, calibrate on validation data, and evaluate on held-out test data.
+
+Then sweep attack magnitude across every attack class and compare:
+
+* static OPTIMUS;
+* adaptive fusion;
+* mined invariants;
+* combined system;
+* One-Class SVM;
+* PCA.
+
+Report:
+
+* precision, recall, F1, false-positive rate, and evasion rate;
+* evasion at each attack strength;
+* mean evasion across strengths;
+* limitations that cannot be resolved by passive monitoring.

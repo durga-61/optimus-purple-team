@@ -19,6 +19,40 @@ from app.defender.models import (
 
 logger = logging.getLogger("defender.decision")
 
+# Fusion layers and the safety envelope for adaptive weights.  One layer may
+# never silence another completely, and no layer may dominate without evidence.
+FUSION_WEIGHT_KEYS = ("semantic", "temporal", "structural", "ml")
+FUSION_WEIGHT_BOUNDS: Dict[str, tuple] = {
+    "semantic": (0.20, 0.60),
+    "temporal": (0.10, 0.40),
+    "structural": (0.10, 0.40),
+    "ml": (0.05, 0.35),
+}
+
+
+def validate_fusion_weights(weights: Dict[str, float]) -> Dict[str, float]:
+    """Validate a complete fusion vector: finite, non-negative, bounded, sums to 1."""
+    missing = [k for k in FUSION_WEIGHT_KEYS if k not in weights]
+    if missing:
+        raise ValueError(f"Missing fusion weights: {', '.join(missing)}")
+    values = {}
+    for key in FUSION_WEIGHT_KEYS:
+        value = float(weights[key])
+        if value != value or value in (float("inf"), float("-inf")):
+            raise ValueError(f"Fusion weight '{key}' must be finite.")
+        if value < 0.0:
+            raise ValueError(f"Fusion weight '{key}' must be non-negative.")
+        low, high = FUSION_WEIGHT_BOUNDS[key]
+        if not (low - 1e-9 <= value <= high + 1e-9):
+            raise ValueError(
+                f"Fusion weight '{key}'={value:.3f} outside safety bounds [{low}, {high}]."
+            )
+        values[key] = value
+    total = sum(values.values())
+    if abs(total - 1.0) > 1e-5:
+        raise ValueError(f"Fusion weights must sum to 1.0 (got {total:.6f}).")
+    return values
+
 
 class JointDecisionEngine:
     """Combines multi-stage defender evidence into a grounded security classification."""
@@ -50,6 +84,27 @@ class JointDecisionEngine:
         self.suspicious_risk_threshold = (
             suspicious_risk_threshold if suspicious_risk_threshold is not None else getattr(settings, "DECISION_SUSPICIOUS_RISK_THRESHOLD", 0.20)
         )
+
+    def get_weights(self) -> Dict[str, float]:
+        """Return the active fusion weight vector."""
+        return {
+            "semantic": self.w_semantic,
+            "temporal": self.w_temporal,
+            "structural": self.w_structural,
+            "ml": self.w_ml,
+        }
+
+    def update_weights(self, weights: Dict[str, float]) -> None:
+        """Atomically replace fusion weights after safety validation.
+
+        Callers must supply trusted, independently validated inputs.  This
+        method deliberately accepts no packet, alert, or attacker feedback.
+        """
+        validated = validate_fusion_weights(weights)
+        self.w_semantic = validated["semantic"]
+        self.w_temporal = validated["temporal"]
+        self.w_structural = validated["structural"]
+        self.w_ml = validated["ml"]
 
     def decide(
         self,
@@ -215,6 +270,7 @@ class JointDecisionEngine:
             )
 
         contributing_evidence = {
+            "fusion_weights": self.get_weights(),
             "ml": {
                 "score": ml.anomaly_score,
                 "status": ml.status,

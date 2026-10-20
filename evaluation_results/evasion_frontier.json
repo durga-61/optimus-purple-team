@@ -1,0 +1,2589 @@
+{
+  "generated_at": "2026-10-20T17:11:01.321924+00:00",
+  "strengths": [
+    0.1,
+    0.25,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+  ],
+  "configs": [
+    "optimus_static",
+    "optimus_adaptive",
+    "optimus_invariants",
+    "optimus_combined",
+    "one_class_svm",
+    "pca"
+  ],
+  "attack_classes": [
+    "capacity_manipulation",
+    "inventory_manipulation",
+    "sensor_spoofing",
+    "replay_attack",
+    "coordinated_weak",
+    "multi_source"
+  ],
+  "rows": [
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 102,
+      "detection_rate": 0.2656,
+      "evasion_rate": 0.7344,
+      "mean_score": 0.1576
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0412
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0393
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.3988
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 33,
+      "detection_rate": 0.5156,
+      "evasion_rate": 0.4844,
+      "mean_score": 0.2391
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0381
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.1,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 13,
+      "detection_rate": 0.2031,
+      "evasion_rate": 0.7969,
+      "mean_score": 0.1888
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 184,
+      "detection_rate": 0.4792,
+      "evasion_rate": 0.5208,
+      "mean_score": 0.3288
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0463
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0387
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7219
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6776
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0403
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.25,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.4481
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.409
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5252
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0413
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7193
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6797
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0406
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.4,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.4479
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.4355
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5271
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0416
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7229
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8405
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0369
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.6,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.4437
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.4367
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5275
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0375
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7257
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8471
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.034
+    },
+    {
+      "config": "optimus_static",
+      "strength": 0.8,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.4487
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.432
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.528
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0408
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7262
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8211
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0286
+    },
+    {
+      "config": "optimus_static",
+      "strength": 1.0,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.4473
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 102,
+      "detection_rate": 0.2656,
+      "evasion_rate": 0.7344,
+      "mean_score": 0.1209
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0137
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0131
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.367
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 33,
+      "detection_rate": 0.5156,
+      "evasion_rate": 0.4844,
+      "mean_score": 0.2111
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0127
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.1,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 13,
+      "detection_rate": 0.2031,
+      "evasion_rate": 0.7969,
+      "mean_score": 0.1079
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 184,
+      "detection_rate": 0.4792,
+      "evasion_rate": 0.5208,
+      "mean_score": 0.2904
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0155
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.013
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7215
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6528
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0134
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.25,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.3262
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.3715
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5022
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0138
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7171
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.656
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0135
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.4,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.3261
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.4079
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5029
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0139
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7219
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8717
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0124
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.6,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.3244
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.4093
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.503
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0125
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7229
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8797
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0115
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 0.8,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.3264
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 248,
+      "detection_rate": 0.6458,
+      "evasion_rate": 0.3542,
+      "mean_score": 0.4045
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5031
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0136
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.723
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8515
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0098
+    },
+    {
+      "config": "optimus_adaptive",
+      "strength": 1.0,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 56,
+      "detection_rate": 0.875,
+      "evasion_rate": 0.125,
+      "mean_score": 0.3259
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.3689
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3126
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3097
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5993
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4955
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0381
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.1,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.458
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.4655
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3225
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3093
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7837
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.769
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0403
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.25,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5682
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.5286
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6937
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.315
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7825
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7717
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0406
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.4,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5679
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.5469
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6956
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3149
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7848
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8855
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0369
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.6,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5637
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.5467
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6961
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3078
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7872
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8865
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.034
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 0.8,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5687
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.5456
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6965
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.3141
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7881
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.8792
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0286
+    },
+    {
+      "config": "optimus_invariants",
+      "strength": 1.0,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5673
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.2928
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2278
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2267
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.5498
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4186
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0127
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.1,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.321
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.4142
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2316
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2266
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7882
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.752
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0134
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.25,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4734
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.4877
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6709
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2289
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7852
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7545
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0135
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.4,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4733
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.5166
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6715
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2288
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7885
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.9269
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0124
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.6,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4717
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.5167
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6716
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2262
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7893
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.928
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0115
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 0.8,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4736
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.516
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.6719
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.2285
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.7896
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.9229
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0098
+    },
+    {
+      "config": "optimus_combined",
+      "strength": 1.0,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.4731
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 1.1999
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.4264
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -5.0201
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -3.0522
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 6.2933
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.8844
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.1,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 18.2894
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 64,
+      "detection_rate": 0.1667,
+      "evasion_rate": 0.8333,
+      "mean_score": 2.8794
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -3.8224
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -5.0504
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -5.418
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 18.267
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -5.0702
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.25,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 64,
+      "detection_rate": 0.1667,
+      "evasion_rate": 0.8333,
+      "mean_score": 2.9583
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -5.2253
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.3877
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.9218
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.4559
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.4,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 128,
+      "detection_rate": 0.3333,
+      "evasion_rate": 0.6667,
+      "mean_score": 3.1567
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.5684
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.1911
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.6521
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.389
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.6,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 128,
+      "detection_rate": 0.3333,
+      "evasion_rate": 0.6667,
+      "mean_score": 3.0981
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.4835
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.8123
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.5642
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.2923
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 0.8,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 128,
+      "detection_rate": 0.3333,
+      "evasion_rate": 0.6667,
+      "mean_score": 3.0315
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.901
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.6939
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.665
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": -4.2918
+    },
+    {
+      "config": "one_class_svm",
+      "strength": 1.0,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 18.3704
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 256,
+      "detection_rate": 0.6667,
+      "evasion_rate": 0.3333,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0001
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0001
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.1,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 259,
+      "detection_rate": 0.6745,
+      "evasion_rate": 0.3255,
+      "mean_score": 0.0002
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0001
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0004
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0004
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.25,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 3,
+      "detection_rate": 0.0469,
+      "evasion_rate": 0.9531,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 314,
+      "detection_rate": 0.8177,
+      "evasion_rate": 0.1823,
+      "mean_score": 0.0004
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0003
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0001
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.001
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0011
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.4,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 58,
+      "detection_rate": 0.9062,
+      "evasion_rate": 0.0938,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.0009
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0006
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0003
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0024
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0024
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.6,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.0017
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0011
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0005
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0042
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0043
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 0.8,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "ALL",
+      "total": 384,
+      "detected": 320,
+      "detection_rate": 0.8333,
+      "evasion_rate": 0.1667,
+      "mean_score": 0.0026
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "capacity_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0017
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "coordinated_weak",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0007
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "inventory_manipulation",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0065
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "multi_source",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0066
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "replay_attack",
+      "total": 64,
+      "detected": 0,
+      "detection_rate": 0.0,
+      "evasion_rate": 1.0,
+      "mean_score": 0.0
+    },
+    {
+      "config": "pca",
+      "strength": 1.0,
+      "attack_class": "sensor_spoofing",
+      "total": 64,
+      "detected": 64,
+      "detection_rate": 1.0,
+      "evasion_rate": 0.0,
+      "mean_score": 0.0
+    }
+  ],
+  "summary": {
+    "optimus_static": {
+      "mean_evasion_across_strengths": 0.4453,
+      "evasion_at_full_strength": 0.3542
+    },
+    "optimus_adaptive": {
+      "mean_evasion_across_strengths": 0.4453,
+      "evasion_at_full_strength": 0.3542
+    },
+    "optimus_invariants": {
+      "mean_evasion_across_strengths": 0.1667,
+      "evasion_at_full_strength": 0.1667
+    },
+    "optimus_combined": {
+      "mean_evasion_across_strengths": 0.1667,
+      "evasion_at_full_strength": 0.1667
+    },
+    "one_class_svm": {
+      "mean_evasion_across_strengths": 0.7778,
+      "evasion_at_full_strength": 0.6667
+    },
+    "pca": {
+      "mean_evasion_across_strengths": 0.2235,
+      "evasion_at_full_strength": 0.1667
+    }
+  },
+  "metadata": {
+    "seed": 42,
+    "episodes_per_class": 8,
+    "episode_length": 8,
+    "strengths": [
+      0.1,
+      0.25,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "records": 2304
+  }
+}

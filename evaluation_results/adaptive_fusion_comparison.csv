@@ -1,0 +1,5 @@
+configuration,criterion,threshold,precision,recall,f1,false_positive_rate,accuracy,evasion_rate,mean_risk_score
+optimus_static_rule,rule,,1.0,0.7693,0.8696,0.0,0.8154,0.2307,0.3985
+optimus_adaptive_rule,rule,,1.0,0.7693,0.8696,0.0,0.8154,0.2307,0.3703
+optimus_static_risk,risk,0.3,1.0,0.7691,0.8695,0.0,0.8153,0.2309,0.3985
+optimus_adaptive_risk,risk,0.301,1.0,0.7689,0.8693,0.0,0.8151,0.2311,0.3703

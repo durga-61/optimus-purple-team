@@ -40,6 +40,18 @@ Required:
 * defender feedback;
 * attack history.
 
+## Research Extensions
+
+Optional, evaluation-focused extensions:
+
+* trusted-label adaptive fusion with bounded, normalized weights;
+* dynamic invariant mining with independent validation, operator approval, and rollback;
+* independent One-Class SVM and PCA baselines;
+* a scaled-attack evasion frontier;
+* reproducible dataset manifests, SHA-256 artifact checksums, and audit-lifecycle verification.
+
+These extensions must not weaken the deterministic detection rules, consume attacker feedback, or activate learned changes without validation.
+
 ## Security Requirements
 
 The attacker must not have arbitrary system access.

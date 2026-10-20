@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-10-20T17:11:03.022614+00:00",
+  "miss_id": "MISS-1D2B5250",
+  "proposal_id": "PROP-F8113383",
+  "validation_verdict": "PASSED",
+  "unauthorized_activation_blocked": true,
+  "rejected_proposal_verdict": "REJECTED",
+  "rejection_logged": true,
+  "rollback": {
+    "rolled_back_proposal": "PROP-F8113383",
+    "restored_parameters": {
+      "c1_tolerance": 0.5
+    }
+  },
+  "baseline_parameters": {
+    "c1_tolerance": 0.5,
+    "c2_tolerance": 0.5,
+    "primary_risk_threshold": 0.4,
+    "suspicious_risk_threshold": 0.2
+  },
+  "active_parameters_after_rollback": {
+    "c1_tolerance": 0.5,
+    "c2_tolerance": 0.5,
+    "primary_risk_threshold": 0.4,
+    "suspicious_risk_threshold": 0.2
+  },
+  "audit_chain_valid": true,
+  "audit_events": 13,
+  "event_types": {
+    "DATA_RECEIVED": 1,
+    "HARDENING_MISS_RECORDED": 1,
+    "HARDENING_PROPOSAL_ACTIVATED": 1,
+    "HARDENING_PROPOSAL_APPROVED": 1,
+    "HARDENING_PROPOSAL_GENERATED": 1,
+    "HARDENING_PROPOSAL_REJECTED": 1,
+    "HARDENING_PROPOSAL_VALIDATED": 1,
+    "HARDENING_ROLLED_BACK": 1,
+    "JOINT_DECISION": 1,
+    "ML_ANALYSIS_COMPLETED": 1,
+    "SEMANTIC_CHECK_PASSED": 1,
+    "STRUCTURAL_ANALYSIS": 1,
+    "TEMPORAL_ANALYSIS": 1
+  },
+  "tamper_detected": true,
+  "tamper_error": "HASH_MISMATCH",
+  "lifecycle_complete": true
+}

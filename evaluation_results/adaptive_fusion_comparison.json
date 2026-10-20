@@ -1,0 +1,179 @@
+{
+  "metadata": {
+    "test_samples": 12000,
+    "validation_samples": 4800,
+    "max_fpr": 0.001,
+    "static_weights": {
+      "semantic": 0.4,
+      "temporal": 0.25,
+      "structural": 0.2,
+      "ml": 0.15
+    },
+    "static_threshold": {
+      "threshold": 0.3,
+      "f1": 0.866981,
+      "recall": 0.765833,
+      "precision": 0.998913,
+      "false_positive_rate": 0.000833
+    },
+    "adaptive_threshold": {
+      "threshold": 0.301,
+      "f1": 0.86739,
+      "recall": 0.765833,
+      "precision": 1.0,
+      "false_positive_rate": 0.0
+    },
+    "adaptive_result": {
+      "weights": {
+        "semantic": 0.49092757,
+        "temporal": 0.11031382,
+        "structural": 0.34875861,
+        "ml": 0.05
+      },
+      "threshold": 0.301,
+      "validation_f1": 0.86739,
+      "validation_recall": 0.765833,
+      "validation_precision": 1.0,
+      "validation_fpr": 0.0,
+      "baseline_weights": {
+        "semantic": 0.4,
+        "temporal": 0.25,
+        "structural": 0.2,
+        "ml": 0.15
+      },
+      "baseline_threshold": 0.3,
+      "baseline_f1": 0.866981,
+      "baseline_recall": 0.765833,
+      "baseline_precision": 0.998913,
+      "baseline_fpr": 0.000833,
+      "adopted": true,
+      "samples": 4800,
+      "attacks": 2400,
+      "normals": 2400,
+      "max_fpr": 0.001,
+      "seed": 42,
+      "search_evaluations": 237,
+      "bounds": {
+        "semantic": [
+          0.2,
+          0.6
+        ],
+        "temporal": [
+          0.1,
+          0.4
+        ],
+        "structural": [
+          0.1,
+          0.4
+        ],
+        "ml": [
+          0.05,
+          0.35
+        ]
+      }
+    },
+    "trusted_label_source": "temporal validation split (splits.val)"
+  },
+  "comparisons": {
+    "optimus_static_rule": {
+      "mode": "rule",
+      "threshold": null,
+      "total_samples": 12000,
+      "tp": 7385,
+      "fp": 0,
+      "tn": 2400,
+      "fn": 2215,
+      "detection_rate": 0.7693,
+      "recall": 0.7693,
+      "precision": 1.0,
+      "f1": 0.8696,
+      "false_positive_rate": 0.0,
+      "accuracy": 0.8154,
+      "evasion_rate": 0.2307,
+      "per_class_recall": {
+        "capacity_manipulation": 1.0,
+        "coordinated_weak": 0.0475,
+        "inventory_manipulation": 1.0,
+        "multi_source": 1.0,
+        "replay_attack": 0.5681,
+        "sensor_spoofing": 1.0
+      },
+      "mean_risk_score": 0.3985
+    },
+    "optimus_adaptive_rule": {
+      "mode": "rule",
+      "threshold": null,
+      "total_samples": 12000,
+      "tp": 7385,
+      "fp": 0,
+      "tn": 2400,
+      "fn": 2215,
+      "detection_rate": 0.7693,
+      "recall": 0.7693,
+      "precision": 1.0,
+      "f1": 0.8696,
+      "false_positive_rate": 0.0,
+      "accuracy": 0.8154,
+      "evasion_rate": 0.2307,
+      "per_class_recall": {
+        "capacity_manipulation": 1.0,
+        "coordinated_weak": 0.0475,
+        "inventory_manipulation": 1.0,
+        "multi_source": 1.0,
+        "replay_attack": 0.5681,
+        "sensor_spoofing": 1.0
+      },
+      "mean_risk_score": 0.3703
+    },
+    "optimus_static_risk": {
+      "mode": "risk",
+      "threshold": 0.3,
+      "total_samples": 12000,
+      "tp": 7383,
+      "fp": 0,
+      "tn": 2400,
+      "fn": 2217,
+      "detection_rate": 0.7691,
+      "recall": 0.7691,
+      "precision": 1.0,
+      "f1": 0.8695,
+      "false_positive_rate": 0.0,
+      "accuracy": 0.8153,
+      "evasion_rate": 0.2309,
+      "per_class_recall": {
+        "capacity_manipulation": 1.0,
+        "coordinated_weak": 0.0462,
+        "inventory_manipulation": 1.0,
+        "multi_source": 1.0,
+        "replay_attack": 0.5681,
+        "sensor_spoofing": 1.0
+      },
+      "mean_risk_score": 0.3985
+    },
+    "optimus_adaptive_risk": {
+      "mode": "risk",
+      "threshold": 0.301,
+      "total_samples": 12000,
+      "tp": 7381,
+      "fp": 0,
+      "tn": 2400,
+      "fn": 2219,
+      "detection_rate": 0.7689,
+      "recall": 0.7689,
+      "precision": 1.0,
+      "f1": 0.8693,
+      "false_positive_rate": 0.0,
+      "accuracy": 0.8151,
+      "evasion_rate": 0.2311,
+      "per_class_recall": {
+        "capacity_manipulation": 1.0,
+        "coordinated_weak": 0.0475,
+        "inventory_manipulation": 1.0,
+        "multi_source": 1.0,
+        "replay_attack": 0.5675,
+        "sensor_spoofing": 0.9981
+      },
+      "mean_risk_score": 0.3703
+    }
+  }
+}

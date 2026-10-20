@@ -58,6 +58,14 @@ class AppSettings(BaseSettings):
     DECISION_PRIMARY_RISK_THRESHOLD: float = 0.40
     DECISION_SUSPICIOUS_RISK_THRESHOLD: float = 0.20
 
+    # Adaptive Fusion & Dynamic Invariant Mining (trusted-label experiments)
+    ADAPTIVE_FUSION_MAX_FPR: float = 0.001
+    ADAPTIVE_FUSION_SEED: int = 42
+    INVARIANT_MIN_NORMAL_COVERAGE: float = 0.999
+    INVARIANT_MAX_FPR: float = 0.001
+    INVARIANT_MIN_ATTACK_DETECTION: float = 0.02
+    INVARIANT_REDUNDANCY_JACCARD: float = 0.95
+
     # Security & API Protection Settings
     ATTACK_GATEWAY_TOKEN: Optional[str] = None
     OPERATOR_TOKEN: Optional[str] = None

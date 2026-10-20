@@ -26,6 +26,24 @@ Test:
 * coordinated manipulation;
 * multi-source manipulation.
 
+## Advanced Research Tests
+
+Verify:
+
+* fusion weights are finite, non-negative, bounded, and sum to 1.0;
+* unsafe weight updates are rejected atomically and never partially applied;
+* threshold calibration honours the false-positive-rate ceiling;
+* adaptive weights are deterministic for a seed and non-degrading on validation;
+* invariant discovery uses clean training data and explicit candidate families;
+* low-coverage, unstable, non-discriminating, and redundant candidates are rejected;
+* activated invariants require operator approval and can be rolled back;
+* broken custom invariants cannot crash semantic analysis;
+* One-Class SVM and PCA fit on normal data only and calibrate on validation data;
+* evasion-frontier generation, aggregation, summaries, and CSV/JSON/PNG exports work;
+* dataset split manifests and SHA-256 hashes reproduce across exports;
+* artifact checksums cover every exported file except the checksum file itself;
+* the full miss → proposal → rejection/approval → activation → rollback lifecycle is audit-chained and tamper-evident.
+
 ## API Tests
 
 Test:
