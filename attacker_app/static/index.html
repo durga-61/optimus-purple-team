@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adversarial Evaluation & Attack Console | Part 2 AI Attacker</title>
+    <link rel="stylesheet" href="/static/css/attacker.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation / Header -->
+        <header class="app-header">
+            <div class="header-branding">
+                <div class="header-tag">PART 2 APPLICATION</div>
+                <h1 class="header-title">Adversarial Evaluation &amp; Attack Console</h1>
+                <p class="header-subtitle">Isolated Adversarial Planner &bull; Attack Gateway Client (Port 8001)</p>
+            </div>
+            <div class="header-status-box">
+                <div class="status-indicator">
+                    <span id="gateway-status-dot" class="status-dot dot-offline"></span>
+                    <span id="gateway-status-text">Checking Gateway...</span>
+                </div>
+                <div class="target-url" id="gateway-target-url">http://127.0.0.1:8000/api/attacker</div>
+            </div>
+        </header>
+
+        <!-- Isolation & Security Notice -->
+        <div class="isolation-banner">
+            <span class="banner-icon">&#9888;</span>
+            <div class="banner-content">
+                <strong>Strict Architectural Isolation:</strong> Part 2 has zero access to Part 1 code, models, detection weights, or simulator internals. All actions flow exclusively through the Part 1 HTTP Attack Gateway with human approval required before execution.
+            </div>
+        </div>
+
+        <!-- Main Workspace Grid -->
+        <main class="console-grid">
+            <!-- Left Column: Target Telemetry & Planner Controls -->
+            <div class="console-col">
+                <!-- Section 1: Target Operational Observation -->
+                <section class="console-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="card-step-badge">01</span>
+                            <h2 class="card-title">Restricted Target Observation</h2>
+                        </div>
+                        <button id="btn-refresh-obs" class="btn btn-secondary btn-sm">Refresh Observation</button>
+                    </div>
+                    <p class="card-desc">Approved operational telemetry delivered by the Part 1 Attack Gateway. Internal security rules, ML scores, and weights are strictly hidden.</p>
+                    
+                    <div class="telemetry-grid">
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Target ID</span>
+                            <span class="telemetry-val" id="obs-target">--</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Inventory</span>
+                            <span class="telemetry-val" id="obs-inventory">--</span>
+                            <span class="telemetry-unit">tons</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Free Capacity</span>
+                            <span class="telemetry-val" id="obs-free-capacity">--</span>
+                            <span class="telemetry-unit">tons</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Temperature</span>
+                            <span class="telemetry-val" id="obs-temperature">--</span>
+                            <span class="telemetry-unit">&deg;C</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Humidity</span>
+                            <span class="telemetry-val" id="obs-humidity">--</span>
+                            <span class="telemetry-unit">%</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Occupancy</span>
+                            <span class="telemetry-val" id="obs-occupancy">--</span>
+                            <span class="telemetry-unit">%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Planner Configuration & Generation -->
+                <section class="console-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="card-step-badge">02</span>
+                            <h2 class="card-title">Adversarial Attack Planner</h2>
+                        </div>
+                        <span class="badge badge-warning" id="active-planner-badge">DETERMINISTIC FALLBACK</span>
+                    </div>
+                    <p class="card-desc">Select planner engine to formulate candidate adversarial maneuvers against the organization.</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Planner Mode</label>
+                        <div class="planner-toggle-group">
+                            <label class="toggle-option active">
+                                <input type="radio" name="planner_mode" value="deterministic" checked>
+                                <span class="toggle-text">Deterministic Fallback</span>
+                                <span class="toggle-sub">Built-in heuristic scenario generator</span>
+                            </label>
+                            <label class="toggle-option">
+                                <input type="radio" name="planner_mode" value="llm">
+                                <span class="toggle-text">LLM Planner</span>
+                                <span class="toggle-sub">External model via strict JSON schema</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="objective-hint">Strategic Objective Hint (Optional)</label>
+                        <input type="text" id="objective-hint" class="form-input" placeholder="e.g. Desynchronize capacity or spoof cold-chain sensor">
+                    </div>
+
+                    <div class="action-bar">
+                        <button id="btn-generate-proposal" class="btn btn-primary btn-block">
+                            Generate Attack Proposal
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Proposal Review & Execution Log -->
+            <div class="console-col">
+                <!-- Section 3: Human-in-the-Loop Proposal Review -->
+                <section class="console-card proposal-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="card-step-badge">03</span>
+                            <h2 class="card-title">Candidate Attack Proposal</h2>
+                        </div>
+                        <span id="proposal-status-badge" class="badge badge-neutral">NO ACTIVE PROPOSAL</span>
+                    </div>
+                    <p class="card-desc">Review and validate the candidate attack proposal before transmission. Automatic execution is disabled.</p>
+
+                    <!-- Empty Proposal Placeholder -->
+                    <div id="proposal-empty" class="empty-state">
+                        <div class="empty-icon">&#128737;</div>
+                        <p class="empty-text">No candidate proposal generated yet.<br>Click "Generate Attack Proposal" to formulate a maneuver.</p>
+                    </div>
+
+                    <!-- Populated Proposal Review Box -->
+                    <div id="proposal-details" class="proposal-box hidden">
+                        <div class="proposal-header-row">
+                            <div>
+                                <span class="meta-label">CANDIDATE PROPOSAL (AWAITING HUMAN APPROVAL)</span>
+                                <div class="proposal-id" id="prop-id">PROP-0001</div>
+                            </div>
+                            <div class="header-mode-group">
+                                <span class="meta-label">PLANNER MODE</span>
+                                <span class="badge badge-warning" id="prop-planner-label">LLM PLANNER</span>
+                            </div>
+                        </div>
+
+                        <!-- 1. Attack Objective -->
+                        <div class="proposal-section">
+                            <span class="section-subheading">Attack Objective:</span>
+                            <p class="objective-text" id="prop-objective">--</p>
+                        </div>
+
+                        <!-- 2. Observed Information -->
+                        <div class="proposal-section">
+                            <span class="section-subheading">Observed Information (Provided to AI):</span>
+                            <div class="observed-info-box" id="prop-observed-info">
+                                <span class="obs-tag">Target: <strong id="prop-obs-target">--</strong></span>
+                                <span class="obs-tag">Inventory: <strong id="prop-obs-inventory">--</strong></span>
+                                <span class="obs-tag">Free Capacity: <strong id="prop-obs-free">--</strong></span>
+                                <span class="obs-tag">Temperature: <strong id="prop-obs-temp">--</strong></span>
+                                <span class="obs-tag">Humidity: <strong id="prop-obs-humidity">--</strong></span>
+                                <span class="obs-tag">Occupancy: <strong id="prop-obs-occ">--</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- 3. AI Proposed Strategy -->
+                        <div class="proposal-section">
+                            <span class="section-subheading">AI Proposed Strategy:</span>
+                            <div class="ai-strategy-box">
+                                <span class="strategy-icon">&#9873;</span>
+                                <p class="strategy-text" id="prop-strategy-rationale">--</p>
+                            </div>
+                        </div>
+
+                        <!-- 4. Structured Attack Proposal -->
+                        <div class="proposal-section">
+                            <span class="section-subheading">Structured Attack Proposal:</span>
+                            <div class="structured-proposal-grid">
+                                <div class="meta-item">
+                                    <span class="meta-label">Attack Type</span>
+                                    <span class="meta-value code-font" id="prop-attack-type">--</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Target Metric</span>
+                                    <span class="meta-value code-font" id="prop-target">--</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Proposed Value</span>
+                                    <span class="meta-value code-font" id="prop-value">--</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Validation Status</span>
+                                    <div id="prop-validation">--</div>
+                                </div>
+                            </div>
+                            <div id="prop-validation-errors" class="validation-errors-box hidden"></div>
+                        </div>
+
+                        <!-- 5. Human Approval -->
+                        <div class="proposal-section approval-section">
+                            <span class="section-subheading">Human Approval:</span>
+                            <div class="approval-notice">
+                                <span class="notice-icon">&#9888;</span>
+                                <span><strong>Human Approval Gate:</strong> This AI proposal has NOT been executed. Review the strategy and structured payload before clicking approve.</span>
+                            </div>
+
+                            <div class="proposal-actions">
+                                <button id="btn-execute-proposal" class="btn btn-danger btn-lg">
+                                    [ APPROVE &amp; EXECUTE ]
+                                </button>
+                                <button id="btn-discard-proposal" class="btn btn-secondary">
+                                    Discard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Execution Log & Feedback -->
+                <section class="console-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="card-step-badge">04</span>
+                            <h2 class="card-title">Adversarial Evaluation Log &amp; Experiments</h2>
+                        </div>
+                        <button id="btn-reset-all" class="btn btn-secondary btn-sm">Reset Attacker &amp; Simulator</button>
+                    </div>
+                    <p class="card-desc">Restricted experiment records returned by Part 1 Attack Gateway. Observe telemetry changes on Operations and security decisions on Defender.</p>
+
+                    <!-- Evaluation Pipeline Banner -->
+                    <div class="workflow-steps-box">
+                        <div class="step-pill">1. Raw Data (Operations)</div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-pill active-pill">2. AI Attack (Attacker)</div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-pill">3. Data Change (Simulator)</div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-pill">4. Defender Decision (Portal)</div>
+                    </div>
+
+                    <div class="history-table-wrapper">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Exp ID</th>
+                                    <th>Attack ID</th>
+                                    <th>Attack Type</th>
+                                    <th>Target</th>
+                                    <th>Execution</th>
+                                    <th>Detection</th>
+                                    <th>Classification</th>
+                                    <th>Delay</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <tr class="empty-row">
+                                    <td colspan="8">No experiments executed in this session.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/attacker.js"></script>
+</body>
+</html>

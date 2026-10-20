@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organization Security Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="portal-header">
+    <div>
+      <div class="brand-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Organization Security Portal
+      </div>
+      <div class="brand-subtitle">Information Security Monitoring &amp; AI Attack Simulation Platform</div>
+    </div>
+
+    <div class="header-status-group">
+      <div class="indicator">
+        <span id="health-dot" class="status-dot"></span>
+        <span id="kpi-backend-health">CONNECTING...</span>
+      </div>
+      <div id="current-time" class="time-display">--:--:-- UTC</div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Connection Warning Banner (Shown if API Unreachable) -->
+    <div id="connection-banner" class="connection-banner hidden">
+      <div>
+        <strong>Connection Warning:</strong> Unable to communicate with the security backend service. Retrying in background...
+      </div>
+      <button class="btn" onclick="refreshDashboard()">Retry Now</button>
+    </div>
+
+    <!-- Section A: Security Overview KPI Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Security Status</div>
+        <div id="kpi-security-status" class="kpi-value"><span class="badge badge-normal">LOADING</span></div>
+        <div class="kpi-subtext">Current system state</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Integrity Score</div>
+        <div id="kpi-integrity-score" class="kpi-value">--%</div>
+        <div class="kpi-subtext">Composite data fidelity</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Alerts</div>
+        <div id="kpi-active-alerts" class="kpi-value" style="color: var(--status-attack);">0</div>
+        <div class="kpi-subtext">Requires operator review</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Monitored Sources</div>
+        <div id="kpi-monitored-sources" class="kpi-value">5</div>
+        <div class="kpi-subtext">Ledgers, sensors &amp; gateways</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Last Analysis</div>
+        <div id="kpi-last-analysis" class="kpi-value" style="font-size: 1.25rem;">--:--:--</div>
+        <div class="kpi-subtext">UTC Evaluation timestamp</div>
+      </div>
+    </section>
+
+    <!-- Section B & C: Main Two Columns (Warehouse Ops + Pipeline Flow) -->
+    <div class="dashboard-columns">
+
+      <!-- Left Column: Live Warehouse Operations & Controls -->
+      <section class="panel-card">
+        <div class="panel-title">
+          <span>Live Warehouse Operations &bull; <span id="wh-id">W01</span></span>
+          <span id="wh-step" class="badge badge-normal">Step 0</span>
+        </div>
+
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <span class="telemetry-label">Current Inventory</span>
+            <span id="wh-inventory" class="telemetry-value">-- t</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Free Capacity</span>
+            <span id="wh-free-capacity" class="telemetry-value">-- t</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Total Capacity</span>
+            <span id="wh-total-capacity" class="telemetry-value">-- t</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Internal Temp</span>
+            <span id="wh-temperature" class="telemetry-value">-- &deg;C</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Relative Humidity</span>
+            <span id="wh-humidity" class="telemetry-value">-- %</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Shipment Flow (In / Out)</span>
+            <span class="telemetry-value"><span id="wh-inbound">--</span> / <span id="wh-outbound">--</span></span>
+          </div>
+
+          <div class="progress-bar-container">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+              <span>Occupancy Ratio</span>
+              <span id="wh-occupancy">--%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="wh-occupancy-bar" class="progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Operations Controls -->
+        <div style="border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 600;">
+            Simulation Operations
+          </div>
+          <div class="controls-group">
+            <button id="btn-step" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Run Next Observation
+            </button>
+            <button id="btn-reset" class="btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Reset Simulation
+            </button>
+          </div>
+        </div>
+
+        <!-- Deterministic Scenarios Controls -->
+        <div style="border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 600;">
+            Controlled Security Test Scenarios (Simulated)
+          </div>
+          <div id="scenarios-container" class="controls-group">
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Loading scenarios catalog...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Security Pipeline Stages Visualization -->
+      <section class="panel-card">
+        <div class="panel-title">
+          <span>Security Pipeline Verification</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Real Backend State</span>
+        </div>
+
+        <div class="pipeline-flow">
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">1. Data Ingestion</div>
+              <div class="stage-desc">Cold-storage telemetry received</div>
+            </div>
+            <div id="stage-data"><span class="badge badge-normal">COMPLETED</span></div>
+          </div>
+
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">2. Preprocessing &amp; Normalization</div>
+              <div class="stage-desc">Schema validation &amp; sequence verification</div>
+            </div>
+            <div id="stage-pre"><span class="badge badge-normal">COMPLETED</span></div>
+          </div>
+
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">3. ML Anomaly Detection</div>
+              <div class="stage-desc">IsolationForest statistical outlier analysis</div>
+            </div>
+            <div id="stage-ml"><span class="badge badge-normal">WAITING</span></div>
+          </div>
+
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">4. Semantic Integrity Verification</div>
+              <div class="stage-desc">C1 Capacity, C2 Flow &amp; C3 Operating envelope</div>
+            </div>
+            <div id="stage-sem"><span class="badge badge-normal">WAITING</span></div>
+          </div>
+
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">5. Temporal State Analysis</div>
+              <div class="stage-desc">Persistence, recurrence &amp; exponential decay</div>
+            </div>
+            <div id="stage-temp"><span class="badge badge-normal">WAITING</span></div>
+          </div>
+
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">6. Structural Graph Correlation</div>
+              <div class="stage-desc">Cross-subsystem topological dependency check</div>
+            </div>
+            <div id="stage-struct"><span class="badge badge-normal">WAITING</span></div>
+          </div>
+
+          <div class="pipeline-stage">
+            <div>
+              <div class="stage-name">7. Joint Security Decision</div>
+              <div class="stage-desc">Fused risk calculation &amp; verified classification</div>
+            </div>
+            <div id="stage-dec"><span class="badge badge-normal">WAITING</span></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Section D: Detailed Security Analysis Breakdown -->
+    <section class="panel-card">
+      <div class="panel-title">
+        <span>Detailed Security Analysis</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Inspection of Contributing Pipeline Evidence</span>
+      </div>
+
+      <!-- Joint Decision Hero Banner -->
+      <div id="joint-decision-banner" class="decision-banner">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">Joint Classification:</span>
+            <span id="joint-classification"><span class="badge badge-normal">NORMAL</span></span>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.85rem;">
+            <span id="joint-risk" style="margin-right: 1rem;">Risk: 0.000</span>
+            <strong id="joint-integrity" style="color: #fff;">Integrity: 100.0%</strong>
+          </div>
+        </div>
+        <div id="joint-explanation" style="font-size: 0.85rem; color: var(--text-secondary);">
+          Operational records, IoT telemetry, and shipment ledgers are internally consistent.
+        </div>
+      </div>
+
+      <div class="analysis-grid">
+
+        <!-- Stage: ML Component -->
+        <div class="analysis-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Machine Learning Anomaly Detector</strong>
+            <span id="ml-status"><span class="badge badge-normal">NORMAL</span></span>
+          </div>
+          <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.25rem;">
+            <div><strong>Anomaly Score:</strong> <span id="ml-score" style="font-family: var(--font-mono);">0.000</span> (Threshold: 0.60)</div>
+            <div><strong>Anomaly Flag:</strong> <span id="ml-flag">FALSE</span></div>
+            <div style="color: var(--text-muted); font-size: 0.75rem;">Features: <span id="ml-features">--</span></div>
+          </div>
+        </div>
+
+        <!-- Stage: Temporal Component -->
+        <div class="analysis-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Temporal Analysis Engine</strong>
+            <span id="temp-status"><span class="badge badge-normal">STABLE</span></span>
+          </div>
+          <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.25rem;">
+            <div><strong>Temporal Score:</strong> <span id="temp-score" style="font-family: var(--font-mono);">0.00</span></div>
+            <div><strong>Consecutive Persistence:</strong> <span id="temp-persistence">0 steps</span></div>
+            <div><strong>Recurrence (10-Step Window):</strong> <span id="temp-recurrence">0</span></div>
+          </div>
+        </div>
+
+        <!-- Stage: Semantic Constraints Breakdown -->
+        <div class="analysis-card" style="grid-column: span 2;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Semantic Integrity Verification</strong>
+            <span id="sem-status"><span class="badge badge-normal">NORMAL</span></span>
+          </div>
+          <div style="font-size: 0.8rem; margin-bottom: 0.25rem;">
+            <strong>Semantic Score:</strong> <span id="sem-score" style="font-family: var(--font-mono);">0.00</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem;">
+            <div id="c1-block" class="constraint-block">Loading C1...</div>
+            <div id="c2-block" class="constraint-block">Loading C2...</div>
+            <div id="c3-block" class="constraint-block">Loading C3...</div>
+          </div>
+        </div>
+
+        <!-- Stage: Structural Component -->
+        <div class="analysis-card" style="grid-column: span 2;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Structural Graph Topology Analysis</strong>
+            <span id="struct-status"><span class="badge badge-normal">ISOLATED</span></span>
+          </div>
+          <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.25rem;">
+            <div><strong>Structural Score:</strong> <span id="struct-score" style="font-family: var(--font-mono);">0.00</span></div>
+            <div><strong>Implicated Entities:</strong> <span id="struct-nodes" style="color: var(--text-secondary);">None (Isolated)</span></div>
+            <div><strong>Coupled Subsystems:</strong> <span id="struct-edges" style="color: var(--text-secondary);">None</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section E & F: Bottom Two Columns (Active Alerts + Event Stream) -->
+    <div class="dashboard-columns">
+
+      <!-- Active Alerts -->
+      <section class="panel-card">
+        <div class="panel-title">
+          <span>Active Security Alerts</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Real-time Incident Queue</span>
+        </div>
+        <div id="alerts-container" class="alerts-list">
+          <div class="empty-state">No active security alerts. System is operating normally.</div>
+        </div>
+      </section>
+
+      <!-- Audit Event Stream -->
+      <section class="panel-card">
+        <div class="panel-title">
+          <span>Security Event Stream</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Audit Log Timeline</span>
+        </div>
+        <div id="events-container" class="events-list">
+          <div class="empty-state">No security events recorded.</div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

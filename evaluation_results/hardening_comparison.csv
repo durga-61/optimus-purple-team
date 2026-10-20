@@ -1,0 +1,16 @@
+metric,baseline,hardened,delta
+overall_accuracy,0.8154,0.9489,+0.1335
+overall_recall,0.7693,0.9361,+0.1668
+overall_precision,1.0,1.0,+0.0000
+overall_f1,0.8696,0.967,+0.0974
+overall_fpr,0.0,0.0,+0.0000
+recall_capacity_manipulation,1.0000,1.0000,+0.0000
+recall_inventory_manipulation,1.0000,1.0000,+0.0000
+recall_sensor_spoofing,1.0000,1.0000,+0.0000
+recall_replay_attack,0.5681,0.6169,+0.0487
+recall_coordinated_weak,0.0475,1.0000,+0.9525
+recall_multi_source,1.0000,1.0000,+0.0000
+latency_mean_ms,8.189,8.242,+0.053
+latency_median_ms,7.939,7.962,+0.023
+latency_p95_ms,9.662,9.730,+0.068
+latency_p99_ms,11.516,11.606,+0.090

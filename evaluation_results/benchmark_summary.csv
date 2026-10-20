@@ -1,0 +1,17 @@
+Metric,Value,Description
+Split Name,test,Evaluation data split
+Total Samples,12000,Total observations evaluated
+True Positives (TP),7385,Attacks correctly detected
+False Positives (FP),0,Normal observations incorrectly flagged
+True Negatives (TN),2400,Normal observations correctly cleared
+False Negatives (FN),2215,Attacks missed by defender
+Detection Rate (Recall),0.7693,TP / (TP + FN)
+False Positive Rate (FPR),0.0000,FP / (FP + TN)
+False Negative Rate (FNR),0.2307,FN / (TP + FN)
+Precision,1.0000,TP / (TP + FP)
+F1-Score,0.8696,Harmonic mean of Precision and Recall
+Accuracy,0.8154,(TP + TN) / Total
+Mean Detection Latency,0.06,Average steps to detect attack episode
+Median Detection Latency,0.00,Median steps to detect attack episode
+P95 Detection Latency,0.00,95th percentile detection steps
+Episode Detection Rate,0.9917,Fraction of attack episodes detected

@@ -1,0 +1,271 @@
+{
+  "metadata": {
+    "seed": 42,
+    "test_samples": 12000,
+    "normal_samples": 2400,
+    "attack_samples": 9600,
+    "hardening_triggers": [
+      {
+        "miss_id": "MISS-7DF3D4C7",
+        "timestamp": "2026-10-20T15:47:03.365074+00:00",
+        "step": 14,
+        "attack_type": "replay_attack",
+        "target": "sensors_and_inventory",
+        "injected_value": null,
+        "observation": {
+          "warehouse": "W01",
+          "timestamp": "2026-10-20T15:46:30.196406+00:00",
+          "step": 14,
+          "capacity": 50.0,
+          "inventory": 43.88,
+          "free_capacity": 6.12,
+          "temperature": 4.05,
+          "humidity": 71.25,
+          "occupancy": 87.76,
+          "inbound": 1.72,
+          "outbound": 1.19,
+          "is_attack_injected": false,
+          "attack_type": null
+        },
+        "detector_evidence": {
+          "classification": "NORMAL",
+          "risk_score": 0.042,
+          "integrity_score": 95.8,
+          "ml_score": 0.246,
+          "ml_is_anomaly": false,
+          "semantic_score": 0.0,
+          "violated_constraints": [],
+          "c1_diff": 0.0,
+          "c2_diff": 0.31,
+          "temporal_score": 0.02,
+          "temporal_status": "STABLE",
+          "structural_score": 0.0,
+          "structural_status": "ISOLATED"
+        },
+        "diagnosed_cause": "STEALTHY_FLOW_DISCREPANCY_BELOW_C2_TOLERANCE",
+        "details": "Inventory flow discrepancy of 0.31t evaded C2 constraint because it is within current c2_tolerance of 0.50t."
+      },
+      {
+        "miss_id": "MISS-15AF3CF5",
+        "timestamp": "2026-10-20T15:47:03.944856+00:00",
+        "step": 9,
+        "attack_type": "replay_attack",
+        "target": "sensors_and_inventory",
+        "injected_value": null,
+        "observation": {
+          "warehouse": "W01",
+          "timestamp": "2026-10-20T15:46:30.202571+00:00",
+          "step": 9,
+          "capacity": 50.0,
+          "inventory": 44.28,
+          "free_capacity": 5.72,
+          "temperature": 4.25,
+          "humidity": 70.32,
+          "occupancy": 88.56,
+          "inbound": 1.9,
+          "outbound": 0.0,
+          "is_attack_injected": false,
+          "attack_type": null
+        },
+        "detector_evidence": {
+          "classification": "NORMAL",
+          "risk_score": 0.049,
+          "integrity_score": 95.1,
+          "ml_score": 0.257,
+          "ml_is_anomaly": false,
+          "semantic_score": 0.0,
+          "violated_constraints": [],
+          "c1_diff": 0.0,
+          "c2_diff": 0.0,
+          "temporal_score": 0.04,
+          "temporal_status": "STABLE",
+          "structural_score": 0.0,
+          "structural_status": "ISOLATED"
+        },
+        "diagnosed_cause": "MULTI_STAGE_CORROBORATION_GAP",
+        "details": "Attack of type 'replay_attack' did not breach individual semantic tolerances or produce sufficient corroboration across ML and temporal layers."
+      },
+      {
+        "miss_id": "MISS-3C0E5D4C",
+        "timestamp": "2026-10-20T15:47:06.056328+00:00",
+        "step": 15,
+        "attack_type": "coordinated_weak",
+        "target": "sensors_and_inventory",
+        "injected_value": null,
+        "observation": {
+          "warehouse": "W01",
+          "timestamp": "2026-10-20T15:46:30.360809+00:00",
+          "step": 15,
+          "capacity": 50.0,
+          "inventory": 43.45,
+          "free_capacity": 6.05,
+          "temperature": 4.13,
+          "humidity": 72.15,
+          "occupancy": 89.9,
+          "inbound": 1.13,
+          "outbound": 0.83,
+          "is_attack_injected": false,
+          "attack_type": null
+        },
+        "detector_evidence": {
+          "classification": "NORMAL",
+          "risk_score": 0.046,
+          "integrity_score": 95.4,
+          "ml_score": 0.276,
+          "ml_is_anomaly": false,
+          "semantic_score": 0.0,
+          "violated_constraints": [],
+          "c1_diff": 0.5,
+          "c2_diff": 0.0,
+          "temporal_score": 0.02,
+          "temporal_status": "STABLE",
+          "structural_score": 0.0,
+          "structural_status": "ISOLATED"
+        },
+        "diagnosed_cause": "STEALTHY_CAPACITY_SLACK_BELOW_C1_TOLERANCE",
+        "details": "Capacity balance discrepancy of 0.50t evaded C1 constraint because it is within current c1_tolerance of 0.50t."
+      }
+    ],
+    "applied_proposals": [
+      {
+        "proposal_id": "PROP-2500EF73",
+        "created_at": "2026-10-20T15:47:12.294450+00:00",
+        "trigger_miss_id": "MISS-7DF3D4C7",
+        "adjustment_type": "TOLERANCE_TIGHTENING",
+        "target_parameter": "c2_tolerance",
+        "current_value": 0.5,
+        "proposed_value": 0.25,
+        "parameter_bounds": [
+          0.1,
+          0.5
+        ],
+        "rationale": "Tighten C2 inventory flow tolerance from 0.50t to 0.25t to close observed flow discrepancy slack of 0.31t.",
+        "status": "ACTIVE",
+        "validation_result": {
+          "validated_at": "2026-10-20T15:47:13.667519+00:00",
+          "samples_evaluated": 4800,
+          "normal_samples": 2400,
+          "attack_samples": 2400,
+          "baseline_recall": 0.7658,
+          "candidate_recall": 0.7775,
+          "recall_delta": 0.0117,
+          "baseline_fpr": 0.0,
+          "candidate_fpr": 0.0,
+          "fpr_delta": 0.0,
+          "baseline_f1": 0.8674,
+          "candidate_f1": 0.8748,
+          "f1_delta": 0.0074,
+          "max_allowed_fpr": 0.001,
+          "passed_fpr_limit": true,
+          "improved_objective": true,
+          "verdict": "PASSED",
+          "rejection_reason": null
+        },
+        "operator_approved": true,
+        "approved_by": "LeadSecurityOfficer",
+        "approval_timestamp": "2026-10-20T15:47:13.667950+00:00",
+        "activated_at": "2026-10-20T15:47:13.668040+00:00",
+        "rolled_back_at": null
+      },
+      {
+        "proposal_id": "PROP-4F427DB0",
+        "created_at": "2026-10-20T15:47:13.668321+00:00",
+        "trigger_miss_id": "MISS-15AF3CF5",
+        "adjustment_type": "TOLERANCE_TIGHTENING",
+        "target_parameter": "c1_tolerance",
+        "current_value": 0.5,
+        "proposed_value": 0.4,
+        "parameter_bounds": [
+          0.1,
+          0.5
+        ],
+        "rationale": "Propose bounded tightening of C1 tolerance from 0.50t to 0.40t.",
+        "status": "ACTIVE",
+        "validation_result": {
+          "validated_at": "2026-10-20T15:47:15.012798+00:00",
+          "samples_evaluated": 4800,
+          "normal_samples": 2400,
+          "attack_samples": 2400,
+          "baseline_recall": 0.7775,
+          "candidate_recall": 0.9363,
+          "recall_delta": 0.1588,
+          "baseline_fpr": 0.0,
+          "candidate_fpr": 0.0,
+          "fpr_delta": 0.0,
+          "baseline_f1": 0.8748,
+          "candidate_f1": 0.9671,
+          "f1_delta": 0.0923,
+          "max_allowed_fpr": 0.001,
+          "passed_fpr_limit": true,
+          "improved_objective": true,
+          "verdict": "PASSED",
+          "rejection_reason": null
+        },
+        "operator_approved": true,
+        "approved_by": "LeadSecurityOfficer",
+        "approval_timestamp": "2026-10-20T15:47:15.013145+00:00",
+        "activated_at": "2026-10-20T15:47:15.013225+00:00",
+        "rolled_back_at": null
+      }
+    ]
+  },
+  "baseline": {
+    "total_samples": 12000,
+    "tp": 7385,
+    "fp": 0,
+    "tn": 2400,
+    "fn": 2215,
+    "accuracy": 0.8154,
+    "recall": 0.7693,
+    "precision": 1.0,
+    "f1": 0.8696,
+    "fpr": 0.0,
+    "per_class_recall": {
+      "capacity_manipulation": 1.0,
+      "inventory_manipulation": 1.0,
+      "sensor_spoofing": 1.0,
+      "replay_attack": 0.568125,
+      "coordinated_weak": 0.0475,
+      "multi_source": 1.0
+    },
+    "latency": {
+      "mean_ms": 8.189,
+      "median_ms": 7.939,
+      "p95_ms": 9.662,
+      "p99_ms": 11.516
+    }
+  },
+  "hardened": {
+    "total_samples": 12000,
+    "tp": 8987,
+    "fp": 0,
+    "tn": 2400,
+    "fn": 613,
+    "accuracy": 0.9489,
+    "recall": 0.9361,
+    "precision": 1.0,
+    "f1": 0.967,
+    "fpr": 0.0,
+    "per_class_recall": {
+      "capacity_manipulation": 1.0,
+      "inventory_manipulation": 1.0,
+      "sensor_spoofing": 1.0,
+      "replay_attack": 0.616875,
+      "coordinated_weak": 1.0,
+      "multi_source": 1.0
+    },
+    "latency": {
+      "mean_ms": 8.242,
+      "median_ms": 7.962,
+      "p95_ms": 9.73,
+      "p99_ms": 11.606
+    }
+  },
+  "delta": {
+    "accuracy": 0.1335,
+    "recall": 0.1668,
+    "precision": 0.0,
+    "f1": 0.0974,
+    "fpr": 0.0
+  }
+}
