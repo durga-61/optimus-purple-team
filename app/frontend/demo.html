@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Sandbox — Cold-Storage Security Monitor</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/demo.css?v=20261025_01">
+</head>
+<body>
+
+  <!-- Top Application Header Chrome -->
+  <header class="demo-header">
+    <div class="brand-section">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <line x1="12" y1="8" x2="12" y2="16" stroke="#38bdf8" stroke-width="1.75"/>
+          <line x1="8" y1="12" x2="16" y2="12" stroke="#38bdf8" stroke-width="1.75"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">
+          Cold-Storage Security Monitor
+          <span class="brand-badge">Facility W01 &bull; Research Sandbox</span>
+        </div>
+        <div class="brand-subtitle">
+          Interactive Design System &bull; Real Hohenheim Dataset Telemetry Replay (Zenodo 15130001)
+        </div>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Theme Switcher (Light / Dark) -->
+      <div class="segmented-control" title="Toggle Theme (Light / Dark)">
+        <button id="btn-theme-light" class="segmented-btn active" title="Light Theme">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          Light
+        </button>
+        <button id="btn-theme-dark" class="segmented-btn" title="Dark Theme">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Dark
+        </button>
+      </div>
+
+      <div class="system-status">
+        <span id="demo-status-dot" class="status-pulse"></span>
+        <span id="demo-status-label">SANDBOX ACTIVE</span>
+      </div>
+      <div id="demo-utc-clock" class="time-readout">--:--:-- UTC</div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar (Three Portals + Demo Sandbox) -->
+  <nav class="demo-nav">
+    <a href="/" class="nav-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Defender Portal
+    </a>
+    <a href="/transmitter" class="nav-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4m-8.4-8.4a6 6 0 0 0 0 8.4"/></svg>
+      Sensor Transmitter
+    </a>
+    <a href="/simulator" class="nav-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Attack Simulator
+    </a>
+    <a href="/demo" class="nav-item active">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Design & Demo Sandbox
+    </a>
+  </nav>
+
+  <!-- Interactive Sandbox Toolbar -->
+  <div class="demo-toolbar">
+    <div class="toolbar-group">
+      <span class="toolbar-label">Theme:</span>
+      <div class="segmented-control">
+        <button id="btn-toolbar-theme-light" class="segmented-btn active">Light</button>
+        <button id="btn-toolbar-theme-dark" class="segmented-btn">Dark</button>
+      </div>
+    </div>
+
+    <div class="toolbar-group">
+      <span class="toolbar-label">Display Density:</span>
+      <div class="segmented-control">
+        <button id="btn-density-standard" class="segmented-btn active">Standard</button>
+        <button id="btn-density-compact" class="segmented-btn">Compact SCADA</button>
+      </div>
+    </div>
+
+    <div class="toolbar-group">
+      <span class="toolbar-label">Interactive State Simulation:</span>
+      <button id="btn-test-normal" class="btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Normal Baseline
+      </button>
+      <button id="btn-test-attack" class="btn btn-danger">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Simulate Attack
+      </button>
+      <button id="btn-revert-live" class="btn btn-primary">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Revert to Live API
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="demo-container">
+
+    <!-- 1. Joint Verdict & Risk Overview -->
+    <section class="grid-section">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Multi-Layer Security Verdict
+        </span>
+        <span class="section-badge">OBS-000000 &bull; 2024-09-02 09:35:25 UTC</span>
+      </div>
+
+      <div id="demo-verdict-banner" class="verdict-banner">
+        <div class="verdict-left">
+          <span id="demo-verdict-badge" class="badge badge-normal" style="font-size: 13px; padding: 4px 12px;">NORMAL</span>
+          <div class="verdict-text-group">
+            <div class="verdict-title">System Verified &bull; High Data Integrity</div>
+            <div id="demo-verdict-desc" class="verdict-desc">
+              Operational records, physical multi-sensor readings, and ledger streams satisfy all invariants.
+            </div>
+          </div>
+        </div>
+
+        <div class="verdict-metrics">
+          <div class="metric-item">
+            <span class="metric-label">Composite Risk</span>
+            <span id="demo-risk-val" class="metric-value">0.045</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Integrity Confidence</span>
+            <span id="demo-integrity-val" class="metric-value" style="color: var(--status-normal);">96.5 %</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Max Spatial &Delta;T</span>
+            <span class="metric-value">0.6 &deg;C</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 9-Sensor Telemetry Grid -->
+    <section class="grid-section">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4m-8.4-8.4a6 6 0 0 0 0 8.4"/></svg>
+          Environmental Telemetry Array (DHT22 Digital Sensors)
+        </span>
+        <span class="section-badge">6 Active Channels &bull; 3 Physical Dropouts Preserved</span>
+      </div>
+
+      <div id="demo-telemetry-grid" class="telemetry-grid">
+        <!-- Rendered dynamically by demo.js -->
+      </div>
+    </section>
+
+    <!-- 3. Five-Layer Defensive Pipeline Breakdown -->
+    <section class="grid-section">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Five-Layer Explainable Detection Architecture
+        </span>
+        <span class="section-badge">Independent Detection &amp; Consensus Fusion</span>
+      </div>
+
+      <div class="layers-grid">
+        <!-- Layer 1: ML IsolationForest -->
+        <div class="layer-card">
+          <div class="layer-card-header">
+            <span class="layer-name">1. ML Outlier Detector</span>
+            <span id="badge-layer-ml" class="badge badge-normal">NORMAL</span>
+          </div>
+          <div class="layer-body">
+            <div class="layer-stat-row">
+              <span>Algorithm:</span>
+              <span class="layer-stat-val">IsolationForest</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Anomaly Score:</span>
+              <span id="score-layer-ml" class="layer-stat-val">0.082</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Threshold:</span>
+              <span class="layer-stat-val">0.600</span>
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;" id="desc-layer-ml">
+              Within Normal Profile
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 2: Temporal EWMA -->
+        <div class="layer-card">
+          <div class="layer-card-header">
+            <span class="layer-name">2. Temporal Continuity</span>
+            <span id="badge-layer-temp" class="badge badge-normal">STABLE</span>
+          </div>
+          <div class="layer-body">
+            <div class="layer-stat-row">
+              <span>Model:</span>
+              <span class="layer-stat-val">EWMA Decay</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Persistence Score:</span>
+              <span id="score-layer-temp" class="layer-stat-val">0.00</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Consecutive Hits:</span>
+              <span class="layer-stat-val">0 / 3</span>
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;" id="desc-layer-temp">
+              Consecutive Violations: 0
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 3: Semantic Constraints C1-C4 -->
+        <div class="layer-card">
+          <div class="layer-card-header">
+            <span class="layer-name">3. Semantic Invariants</span>
+            <span id="badge-layer-sem" class="badge badge-normal">NORMAL</span>
+          </div>
+          <div class="layer-body">
+            <div class="layer-stat-row">
+              <span>C1 Ledger Capacity:</span>
+              <span class="badge badge-na" style="font-size: 9px; padding: 1px 4px;">N/A</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>C2 Mass Flow:</span>
+              <span class="badge badge-na" style="font-size: 9px; padding: 1px 4px;">N/A</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>C3 Envelope:</span>
+              <span class="badge badge-normal" style="font-size: 9px; padding: 1px 4px;">PASSED</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>C4 Spatial Gradient:</span>
+              <span class="badge badge-normal" style="font-size: 9px; padding: 1px 4px;">PASSED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 4: Structural Topology -->
+        <div class="layer-card">
+          <div class="layer-card-header">
+            <span class="layer-name">4. Structural Topology</span>
+            <span id="badge-layer-struct" class="badge badge-normal">ISOLATED</span>
+          </div>
+          <div class="layer-body">
+            <div class="layer-stat-row">
+              <span>Topology Model:</span>
+              <span class="layer-stat-val">NetworkX Graph</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Active Subsystems:</span>
+              <span class="layer-stat-val">0 Active</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Graph Correlation:</span>
+              <span id="score-layer-struct" class="layer-stat-val">0.00</span>
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;" id="desc-layer-struct">
+              No Cross-Subsystem Leakage
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 5: Cryptographic Audit Chain -->
+        <div class="layer-card">
+          <div class="layer-card-header">
+            <span class="layer-name">5. Audit Hash Chain</span>
+            <span id="badge-layer-audit" class="badge badge-normal">INTACT</span>
+          </div>
+          <div class="layer-body">
+            <div class="layer-stat-row">
+              <span>Algorithm:</span>
+              <span class="layer-stat-val">SHA-256 Chained</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Ledger Head:</span>
+              <span class="layer-stat-val" style="font-size: 10px;">8a4f9d...</span>
+            </div>
+            <div class="layer-stat-row">
+              <span>Genesis Validation:</span>
+              <span class="layer-stat-val" style="color: var(--status-normal);">VERIFIED</span>
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;" id="desc-layer-audit">
+              Genesis Hash Chained
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Observation Telemetry Mutation Diff Table -->
+    <section class="grid-section">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Observation Telemetry Mutation Diff (Controlled Evaluation Preview)
+        </span>
+        <span class="section-badge">Pre-Execution Telemetry Comparison</span>
+      </div>
+
+      <div class="diff-table-container">
+        <table class="diff-table">
+          <thead>
+            <tr>
+              <th>Target Channel</th>
+              <th>Property</th>
+              <th>Authentic Baseline Value</th>
+              <th>Injected Value</th>
+              <th>Delta / Mutation Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="diff-preview-row">
+              <td class="diff-orig" style="color:var(--text-primary);font-weight:600;">SENSOR01</td>
+              <td>Temperature</td>
+              <td class="diff-orig">21.2 &deg;C</td>
+              <td class="diff-mod">21.2 &deg;C</td>
+              <td class="diff-delta" style="color:var(--status-normal);">0.0 &deg;C (Identical)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. Benchmark Metrics Strip -->
+    <section class="grid-section">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          Benchmark Evaluation Metrics (Ground-Truth Confusion Matrix)
+        </span>
+        <span class="section-badge">Continuous Cumulative Aggregation</span>
+      </div>
+
+      <div class="metrics-strip">
+        <div class="metric-card">
+          <span class="metric-card-label">Total Runs</span>
+          <span class="metric-card-val">2</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">True Pos (TP)</span>
+          <span class="metric-card-val" style="color: var(--status-normal);">1</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">True Neg (TN)</span>
+          <span class="metric-card-val" style="color: var(--status-normal);">1</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">False Pos (FP)</span>
+          <span class="metric-card-val">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">False Neg (FN)</span>
+          <span class="metric-card-val">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">Precision</span>
+          <span class="metric-card-val" style="color: var(--text-accent);">100.0 %</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">Recall (TPR)</span>
+          <span class="metric-card-val" style="color: var(--text-accent);">100.0 %</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">F1 Score</span>
+          <span class="metric-card-val" style="color: var(--text-accent);">1.000</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Component Design System Showcase -->
+    <section class="grid-section">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Component Design System Elements (Standardized Building Blocks)
+        </span>
+        <span class="section-badge">WCAG AA Compliant &bull; 32px Form Height &bull; High Precision</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Button Variants -->
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span style="font-size: 11px; color: var(--text-muted); width: 120px;">Button Styles:</span>
+          <button class="btn btn-primary">Primary Action</button>
+          <button class="btn">Default Neutral</button>
+          <button class="btn btn-danger">Danger / Attack</button>
+          <button class="btn" disabled style="opacity: 0.5; cursor: not-allowed;">Disabled State</button>
+        </div>
+
+        <!-- Badge Variants -->
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span style="font-size: 11px; color: var(--text-muted); width: 120px;">Status Badges:</span>
+          <span class="badge badge-normal">NORMAL (0.00)</span>
+          <span class="badge badge-warning">SUSPICIOUS (0.57)</span>
+          <span class="badge badge-attack">ATTACK (0.94)</span>
+          <span class="badge badge-na">NOT_APPLICABLE</span>
+        </div>
+
+        <!-- Density Note -->
+        <div style="font-size: 11px; color: var(--text-muted); padding-top: 0.5rem; border-top: 1px solid var(--border-subtle);">
+          <strong>Theme Specification:</strong> Dark slate background (<code style="font-family:var(--font-mono); color:var(--text-accent);">#090d16</code>), surface cards (<code style="font-family:var(--font-mono); color:var(--text-accent);">#111726</code>), thin geometric borders (<code style="font-family:var(--font-mono); color:var(--text-accent);">#202e45</code>), zero purple/pink gradients, zero blurry drop shadows.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/js/demo.js?v=20261025_01"></script>
+</body>
+</html>

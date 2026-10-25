@@ -14,11 +14,14 @@ def inject_capacity_manipulation(
     reported_free_capacity: Optional[float] = 40.0,
     total_capacity: Optional[float] = None,
 ) -> WarehouseObservation:
-    """Injects a capacity inconsistency attack (violates C1 Capacity Consistency).
-    
-    Can target either reported free capacity (e.g. Free=40t) or total capacity (e.g. Total=30t).
-    """
+    """Injects a capacity inconsistency attack (violates C1 Capacity Consistency)."""
     data = obs.model_dump()
+    if data.get("inventory") is None:
+        data["inventory"] = 42.0
+    if data.get("capacity") is None:
+        data["capacity"] = 50.0
+    if data.get("free_capacity") is None:
+        data["free_capacity"] = 8.0
     if total_capacity is not None:
         data["capacity"] = float(total_capacity)
     elif reported_free_capacity is not None:
@@ -37,6 +40,10 @@ def inject_inventory_manipulation(
     Alters the inventory value abruptly without corresponding inbound/outbound records.
     """
     data = obs.model_dump()
+    if data.get("capacity") is None:
+        data["capacity"] = 50.0
+    if data.get("free_capacity") is None:
+        data["free_capacity"] = 8.0
     data["inventory"] = float(manipulated_inventory)
     data["occupancy"] = round((float(manipulated_inventory) / data["capacity"]) * 100, 2)
     data["is_attack_injected"] = True
@@ -95,6 +102,12 @@ def inject_coordinated_manipulation(
     Subtle shifts across inventory and free capacity designed to evade single-variable checks.
     """
     data = obs.model_dump()
+    if data.get("inventory") is None:
+        data["inventory"] = 42.0
+    if data.get("capacity") is None:
+        data["capacity"] = 50.0
+    if data.get("free_capacity") is None:
+        data["free_capacity"] = 8.0
     data["inventory"] = max(0.0, round(data["inventory"] + inventory_delta, 2))
     data["free_capacity"] = max(0.0, round(data["free_capacity"] + reported_free_capacity_delta, 2))
     data["is_attack_injected"] = True
@@ -107,6 +120,12 @@ def inject_multi_source_manipulation(
 ) -> WarehouseObservation:
     """Injects multi-source manipulation affecting sensors and operational records simultaneously."""
     data = obs.model_dump()
+    if data.get("inventory") is None:
+        data["inventory"] = 42.0
+    if data.get("capacity") is None:
+        data["capacity"] = 50.0
+    if data.get("free_capacity") is None:
+        data["free_capacity"] = 8.0
     data["inventory"] = max(0.0, round(data["inventory"] - 5.0, 2))
     data["temperature"] = round(data["temperature"] + 6.0, 2)  # Heating up cold storage
     data["inbound"] = 0.0

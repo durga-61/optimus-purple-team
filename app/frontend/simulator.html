@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Attack Simulator — Cold-Storage Security Monitor</title>
+  <link rel="stylesheet" href="/css/style.css?v=20261025_04">
+  <style>
+    /* Modal styling for Python snippet and evidence inspection */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+    .modal-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+    .modal-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--bg-panel);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="portal-header">
+    <div>
+      <div class="brand-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Cold-Storage Security Monitor
+        <span class="badge badge-normal" style="font-size: 0.65rem; margin-left: 0.5rem;">VIT CSBS &bull; Team 12</span>
+      </div>
+      <div class="brand-subtitle">
+        Portal 3: Attack Simulator &bull; Controlled Evaluation Engine &bull; Empirical Confusion Matrix
+      </div>
+    </div>
+
+    <div class="header-status-group">
+      <div class="indicator">
+        <span id="health-dot" class="status-dot"></span>
+        <span id="kpi-backend-health">SIMULATOR ONLINE</span>
+      </div>
+      <div id="current-time" class="time-display">--:--:-- UTC</div>
+    </div>
+  </header>
+
+  <!-- Three-Portal Navigation Bar -->
+  <nav class="portal-nav">
+    <a href="/" class="nav-tab">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Defender Portal
+    </a>
+    <a href="/transmitter" class="nav-tab">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4m-8.4-8.4a6 6 0 0 0 0 8.4"/></svg>
+      Sensor Transmitter
+    </a>
+    <a href="/simulator" class="nav-tab active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Attack Simulator
+    </a>
+  </nav>
+
+  <main class="container">
+
+    <!-- Section 1: Attack Configuration & Target Observation Form -->
+    <section class="panel-card" style="padding: 1.1rem 1.4rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+        <div>
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+            Controlled Attack Experiment Configuration
+          </span>
+          <div style="font-size: 0.85rem; color: #fff; font-weight: 600; margin-top: 0.15rem;">
+            Select Target Hohenheim Observation &bull; Inject Data-Integrity Anomaly
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">Target Step:</span>
+          <span id="sim-step-badge" class="badge badge-normal" style="font-family: var(--font-mono); font-size: 0.75rem;">Step 0 / 156,835</span>
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <input type="number" id="sim-step-input" class="form-input" style="width: 100px; padding: 0.3rem 0.5rem; font-family: var(--font-mono); font-size: 0.8rem;" min="0" max="156835" value="0">
+            <button class="btn" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="simJumpToStep()">Sync</button>
+          </div>
+          <span id="sim-obs-timestamp" class="time-display" style="font-size: 0.8rem; color: #fff; font-weight: 600;">--:--:-- UTC</span>
+        </div>
+      </div>
+
+      <!-- Form Grid -->
+      <div class="form-grid" style="margin-bottom: 0.85rem;">
+        <div class="form-group">
+          <label class="form-label">Attack Scenario</label>
+          <select id="attack-scenario-select" class="form-select" onchange="onScenarioChanged()">
+            <option value="temperature_manipulation">Temperature Manipulation (Single Outlier)</option>
+            <option value="humidity_manipulation">Humidity Manipulation (Moisture Violation)</option>
+            <option value="sensor_drift">Gradual Sensor Drift (Cumulative Evasion)</option>
+            <option value="replay_substitution">Replay Substitution (Telemetry Freeze)</option>
+            <option value="cross_sensor_inconsistency">Cross-Sensor Inconsistency (Spatial Gradient)</option>
+            <option value="sensor_dropout">Sensor Dropout (Channel Suppression)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Target Sensor Channel</label>
+          <select id="attack-target-sensor-select" class="form-select" onchange="updateDiffPreview()">
+            <option value="SENSOR01">SENSOR01 — Central Ambient Room</option>
+            <option value="SENSOR02">SENSOR02 — Validation Monitor</option>
+            <option value="SENSOR03">SENSOR03 — Storage Corner (Dropout Profile)</option>
+            <option value="SENSOR04">SENSOR04 — Wall Perimeter Monitor</option>
+            <option value="SENSOR05">SENSOR05 — Mobile Storage Unit</option>
+            <option value="SENSOR06">SENSOR06 — Ambient Facility Monitor</option>
+            <option value="SENSOR07">SENSOR07 — Door Entry Perimeter</option>
+            <option value="SENSOR08">SENSOR08 — Cooling Evaporator Zone</option>
+            <option value="SENSOR09">SENSOR09 — Mobile Temperature Probe</option>
+          </select>
+        </div>
+
+        <div id="group-magnitude" class="form-group">
+          <label id="label-magnitude" class="form-label">Temperature Offset Magnitude (&deg;C)</label>
+          <input type="number" id="attack-magnitude-input" class="form-input" step="0.5" value="12.0">
+        </div>
+
+        <div id="group-drift-steps" class="form-group" style="display: none;">
+          <label class="form-label">Drift Steps Window</label>
+          <input type="number" id="attack-drift-steps-input" class="form-input" min="1" max="25" value="5">
+        </div>
+
+        <div id="group-replay-step" class="form-group" style="display: none;">
+          <label class="form-label">Replay Source Step Index</label>
+          <input type="number" id="attack-replay-step-input" class="form-input" min="0" value="0">
+        </div>
+      </div>
+
+      <!-- Scenario Description Callout -->
+      <div id="attack-scenario-desc" style="font-size: 0.8rem; color: var(--text-secondary); background: rgba(255, 255, 255, 0.02); border-left: 3px solid #0ea5e9; padding: 0.5rem 0.85rem; border-radius: 0 4px 4px 0; margin-bottom: 0.85rem;">
+        Applies a discrete numerical offset to a selected sensor channel, testing single-point out-of-envelope detection.
+      </div>
+
+      <!-- Sensor Modification Diff Preview Table -->
+      <div style="background-color: #080d1a; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.65rem 0.85rem; margin-bottom: 0.95rem;">
+        <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 0.35rem;">
+          Observation Telemetry Mutation Diff
+        </div>
+        <table class="diff-table">
+          <thead>
+            <tr>
+              <th>Channel</th>
+              <th>Property</th>
+              <th>Baseline Value</th>
+              <th>Injected Value</th>
+              <th>Delta / Mutation Details</th>
+            </tr>
+          </thead>
+          <tbody id="attack-diff-tbody">
+            <tr>
+              <td colspan="5" style="color: var(--text-muted); text-align: center;">Calculating mutation diff...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Execution Actions Strip -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <button id="btn-run-baseline" class="btn" style="padding: 0.45rem 1rem; font-weight: 600;" onclick="executeBaseline()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Run Baseline (Normal)
+          </button>
+          <button id="btn-run-attack" class="btn btn-primary" style="padding: 0.45rem 1.15rem; font-weight: 700; background: #e11d48; border-color: #e11d48;" onclick="executeAttackExperiment()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Run Attack Experiment
+          </button>
+          <button id="btn-reset-exp" class="btn" style="padding: 0.45rem 0.85rem;" onclick="resetCurrentExperiment()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Reset Form
+          </button>
+        </div>
+
+        <div id="playback-status-msg" style="font-size: 0.8rem; color: var(--text-secondary); font-style: italic;">
+          Ready to inject controlled attack experiments.
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Immediate Experiment Result Summary Card -->
+    <section class="panel-card" style="padding: 1rem 1.4rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.65rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+            Evaluation Outcome &bull;
+          </span>
+          <span id="res-outcome-pill" class="outcome-pill outcome-tn">AWAITING EVALUATION</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Exp ID: <strong id="res-exp-id" style="font-family: var(--font-mono); color: #fff;">None</strong></span>
+        </div>
+
+        <div style="font-size: 0.8rem; display: flex; align-items: center; gap: 1.25rem;">
+          <span>Risk Score: <strong id="res-risk-score" style="font-family: var(--font-mono); color: #38bdf8;">0.000</strong></span>
+          <span>Latency: <strong id="res-latency-ms" style="font-family: var(--font-mono); color: #fff;">-- ms</strong></span>
+          <span>Mutated: <strong id="res-modified-count" style="font-family: var(--font-mono); color: #f87171;">0</strong> channels</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.75rem 1rem;">
+        <div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Ground Truth Label (Isolated)</div>
+          <div style="margin-top: 0.2rem;"><span id="res-expected-label" class="badge badge-ground-truth">NORMAL</span></div>
+        </div>
+        <div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Defender Classification</div>
+          <div id="res-predicted-class" style="margin-top: 0.2rem;"><span class="badge badge-normal">NORMAL</span></div>
+        </div>
+        <div style="grid-column: span 2;">
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Contributing Detection Layers</div>
+          <div id="res-contributing-layers" style="font-size: 0.8rem; color: #fff; margin-top: 0.2rem; font-family: var(--font-mono);">Ready to evaluate.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Empirical Benchmark Metrics Strip -->
+    <section>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+          Empirical Benchmark Metrics (Outside Defender Pipeline)
+        </span>
+        <span style="font-size: 0.7rem; color: var(--text-muted);">Dynamically aggregated across all evaluation trials</span>
+      </div>
+      <div class="metrics-strip">
+        <div class="metric-box">
+          <div class="metric-box-title">Total Trials</div>
+          <div id="metric-total-runs" class="metric-box-val">0</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title" style="color: #34d399;">True Pos (TP)</div>
+          <div id="metric-tp" class="metric-box-val" style="color: #34d399;">0</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title" style="color: #22d3ee;">True Neg (TN)</div>
+          <div id="metric-tn" class="metric-box-val" style="color: #22d3ee;">0</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title" style="color: #fbbf24;">False Pos (FP)</div>
+          <div id="metric-fp" class="metric-box-val" style="color: #fbbf24;">0</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title" style="color: #f87171;">False Neg (FN)</div>
+          <div id="metric-fn" class="metric-box-val" style="color: #f87171;">0</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">Precision</div>
+          <div id="metric-precision" class="metric-box-val">N/A</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">Recall (TPR)</div>
+          <div id="metric-recall" class="metric-box-val">N/A</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">F1 Score</div>
+          <div id="metric-f1" class="metric-box-val">N/A</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">FPR (&alpha;)</div>
+          <div id="metric-fpr" class="metric-box-val">N/A</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">Mean Latency</div>
+          <div id="metric-avg-latency" class="metric-box-val">0.0 ms</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Filterable Evaluation History Table -->
+    <section class="panel-card" style="padding: 1.1rem 1.4rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div>
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+            Evaluation History &bull; Empirical Log
+          </span>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">
+            Individual trial telemetry, injected anomalies, Defender predictions, and timing.
+          </div>
+        </div>
+
+        <!-- Filter Controls & Export Actions -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <select id="filter-scenario" class="form-select" style="padding: 0.3rem 0.5rem; font-size: 0.75rem;" onchange="loadExperimentHistory()">
+            <option value="ALL">All Scenarios</option>
+            <option value="baseline">Baseline (Normal)</option>
+            <option value="temperature_manipulation">Temperature Manipulation</option>
+            <option value="humidity_manipulation">Humidity Manipulation</option>
+            <option value="sensor_drift">Sensor Drift</option>
+            <option value="replay_substitution">Replay Substitution</option>
+            <option value="cross_sensor_inconsistency">Cross-Sensor Inconsistency</option>
+            <option value="sensor_dropout">Sensor Dropout</option>
+          </select>
+
+          <select id="filter-sensor" class="form-select" style="padding: 0.3rem 0.5rem; font-size: 0.75rem;" onchange="loadExperimentHistory()">
+            <option value="ALL">All Sensors</option>
+            <option value="SENSOR01">SENSOR01</option>
+            <option value="SENSOR02">SENSOR02</option>
+            <option value="SENSOR03">SENSOR03</option>
+            <option value="SENSOR04">SENSOR04</option>
+            <option value="SENSOR05">SENSOR05</option>
+            <option value="SENSOR06">SENSOR06</option>
+            <option value="SENSOR07">SENSOR07</option>
+            <option value="SENSOR08">SENSOR08</option>
+            <option value="SENSOR09">SENSOR09</option>
+          </select>
+
+          <select id="filter-outcome" class="form-select" style="padding: 0.3rem 0.5rem; font-size: 0.75rem;" onchange="loadExperimentHistory()">
+            <option value="ALL">All Outcomes</option>
+            <option value="TRUE_POSITIVE">True Positive (TP)</option>
+            <option value="TRUE_NEGATIVE">True Negative (TN)</option>
+            <option value="FALSE_POSITIVE">False Positive (FP)</option>
+            <option value="FALSE_NEGATIVE">False Negative (FN)</option>
+          </select>
+
+          <button class="btn" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" onclick="exportHistoryCSV()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
+          <button class="btn" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" onclick="showReproducibilityModal()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Python Script
+          </button>
+          <button class="btn" style="padding: 0.3rem 0.65rem; font-size: 0.75rem; color: #f87171;" onclick="clearExperimentHistory()">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="ops-table">
+          <thead>
+            <tr>
+              <th style="width: 130px;">Experiment ID</th>
+              <th>Step &bull; Time</th>
+              <th>Scenario</th>
+              <th>Target</th>
+              <th>Ground Truth</th>
+              <th>Defender Verdict</th>
+              <th>Outcome</th>
+              <th>Risk</th>
+              <th>Latency</th>
+              <th>Evidence</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr>
+              <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Awaiting initial experiment...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Python Reproducibility Modal -->
+  <div id="reproducibility-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div style="font-weight: 700; font-size: 0.95rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Python Experiment Reproducibility Script
+        </div>
+        <button class="btn" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="closeReproducibilityModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); margin-bottom: 0.75rem; font-size: 0.8rem;">
+          Run this independent Python script using the <code style="color: #38bdf8;">requests</code> library to recreate the exact attack experiment against the Defender API.
+        </p>
+        <pre id="reproducibility-code" style="background: #080d1a; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.75rem; color: #94a3b8; overflow-x: auto; max-height: 350px;"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeReproducibilityModal()">Close</button>
+        <button class="btn btn-primary" onclick="copyReproducibilityCode()">Copy Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evidence Inspection Modal -->
+  <div id="evidence-detail-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div style="font-weight: 700; font-size: 0.95rem; color: #fff;">
+          Detailed Experiment Evidence Payload
+        </div>
+        <button class="btn" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="closeEvidenceModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre id="modal-evidence-pre" style="background: #080d1a; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.75rem; color: #94a3b8; overflow-x: auto; max-height: 400px;"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeEvidenceModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 2rem;">
+      <div>Cold-Storage Security Monitor &bull; Academic CSBS Team 12 (VIT) &bull; Attack Simulator Portal</div>
+      <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <a href="/" style="color: var(--text-secondary); text-decoration: none;">Defender Portal</a>
+        <a href="/transmitter" style="color: var(--text-secondary); text-decoration: none;">Sensor Transmitter</a>
+        <a href="/api/docs" target="_blank" style="color: var(--text-secondary); text-decoration: none;">API Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/shared.js?v=20261025_04"></script>
+  <script src="/js/simulator.js?v=20261025_04"></script>
+</body>
+</html>

@@ -129,7 +129,7 @@ def export_dataset_splits(
             record.attack_type or "normal" for record in records if record.ground_truth_label == 1
         )
         manifest["splits"][split_name] = {
-            "path": str(path.relative_to(output)),
+            "path": path.relative_to(output).as_posix(),
             "sha256": _sha256_file(path),
             "records": len(records),
             "normal_records": sum(1 for record in records if record.ground_truth_label == 0),
@@ -784,7 +784,7 @@ def write_artifact_checksums(output_dir: str | Path) -> Dict[str, str]:
     for path in sorted(output.rglob("*")):
         if not path.is_file() or path.name == "artifacts_checksums.json":
             continue
-        checksums[str(path.relative_to(output))] = _sha256_file(path)
+        checksums[path.relative_to(output).as_posix()] = _sha256_file(path)
     path = output / "artifacts_checksums.json"
     with open(path, "w", encoding="utf-8") as handle:
         json.dump(checksums, handle, indent=2, sort_keys=True)

@@ -1,82 +1,45 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-
-# C extensions
-*.obj
-*.o
-*.pyd
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual Environments
-.venv/
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+*.class
 
 # Testing & Coverage
 .pytest_cache/
 .coverage
-.coverage.*
 htmlcov/
-.tox/
-.nox/
-coverage.xml
-*.cover
 
-# IDE / Editors
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# IDE / Editor
 .idea/
 .vscode/
 *.swp
 *.swo
-*~
-*.sublime-project
-*.sublime-workspace
 
-# OS-specific files
+# OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
-desktop.ini
 
-# Secrets, Credentials & Local Environment Configs
+# Secrets & Environment
 .env
-.env.local
-.env.*.local
-*.pem
-*.key
-*.cert
-*.p12
-*.pfx
 
-# Local logs & scratch directories
-*.log
+
+# Dataset raw archives and redundant extraction caches
+data/raw/hohenheim/*.zip
+data/raw/hohenheim/preprocessed/
+data/processed/
+*.db
+*.sqlite3
+
+# Generated evaluation dumps & benchmark scripts
+evaluation_results/
+evaluate*.py
+
+# Temporary development screenshots & scratch scripts
+screenshot*.png
+screenshot_*.png
 scratch/
-.system_generated/

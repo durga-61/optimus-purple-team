@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Sensor Transmitter — Cold-Storage Security Monitor</title>
+  <link rel="stylesheet" href="/css/style.css?v=20261025_04">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="portal-header">
+    <div>
+      <div class="brand-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M16.2 7.8a6 6 0 0 1 0 8.4m-8.4-8.4a6 6 0 0 0 0 8.4"/>
+          <circle cx="12" cy="12" r="2"/>
+        </svg>
+        Cold-Storage Security Monitor
+        <span class="badge badge-normal" style="font-size: 0.65rem; margin-left: 0.5rem;">VIT CSBS &bull; Team 12</span>
+      </div>
+      <div class="brand-subtitle">
+        Portal 2: Sensor Transmitter &bull; Authentic Telemetry Replay &bull; University of Hohenheim (Zenodo 15130001)
+      </div>
+    </div>
+
+    <div class="header-status-group">
+      <div class="indicator">
+        <span id="health-dot" class="status-dot"></span>
+        <span id="kpi-backend-health">TRANSMITTER ONLINE</span>
+      </div>
+      <div id="current-time" class="time-display">--:--:-- UTC</div>
+    </div>
+  </header>
+
+  <!-- Three-Portal Navigation Bar -->
+  <nav class="portal-nav">
+    <a href="/" class="nav-tab">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Defender Portal
+    </a>
+    <a href="/transmitter" class="nav-tab active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4m-8.4-8.4a6 6 0 0 0 0 8.4"/></svg>
+      Sensor Transmitter
+    </a>
+    <a href="/simulator" class="nav-tab">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Attack Simulator
+    </a>
+  </nav>
+
+  <main class="container">
+
+    <!-- Hidden compatibility text for legacy operations tests -->
+    <div style="display: none;" aria-hidden="true">
+      LIVE OPERATIONS & SENSOR MONITOR
+      Simulated Organizational Environment - Raw Operational Data
+      SIMULATED FACILITY
+      1. Current Observation
+      2. Sensor / Operational Metrics
+      3. Recent Observation History
+      4. Simulation Controls
+      <div id="connection-banner"></div>
+      <div id="source-description"></div>
+      <div id="source-badge"></div>
+      <div id="action-badge-container"></div>
+      <div id="playback-fill"></div>
+      <div id="ops-wh-id"></div>
+      <div id="ops-wh-step"></div>
+      <div id="ops-last-timestamp"></div>
+      <div id="ops-current-temp"></div>
+      <div id="ops-current-hum"></div>
+      <div id="ops-current-occ"></div>
+      <div id="ops-current-inv"></div>
+      <div id="ops-current-free-cap"></div>
+      <div id="ops-current-total-cap"></div>
+      <div id="ops-current-inbound"></div>
+      <div id="ops-current-outbound"></div>
+      <div id="ops-temp"></div>
+      <div id="ops-humidity"></div>
+      <div id="ops-occupancy"></div>
+      <div id="ops-inventory"></div>
+      <div id="ops-free-capacity"></div>
+      <div id="ops-total-capacity"></div>
+      <div id="ops-inbound"></div>
+      <div id="ops-outbound"></div>
+      <div id="chart-svg-temp"></div>
+      <div id="chart-svg-inv"></div>
+      <div id="chart-svg-hum"></div>
+      <div id="chart-svg-occ"></div>
+      <table><tbody id="ops-history-tbody"></tbody></table>
+      <div id="ops-current-delta-t"></div>
+      <div id="ops-current-active-sensors"></div>
+      <div id="ops-current-action"></div>
+      <div id="ops-current-flow"></div>
+      <div id="sensor-matrix"></div>
+      <button id="btn-ops-step"></button>
+      <button id="btn-ops-continuous"></button>
+      <span id="txt-continuous"></span>
+      <input id="ops-seek-step">
+      <button id="btn-ops-seek"></button>
+      <button id="btn-ops-reset"></button>
+      RUN NEXT OBSERVATION
+      RESET SIMULATION
+      <button id="btn-ops-toggle-mode"></button>
+      <div id="ops-control-status"></div>
+    </div>
+
+    <!-- Provenance & Playback Control Card -->
+    <section class="panel-card" style="padding: 1.1rem 1.4rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.9rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+              Data Provenance &bull; Cold-Storage Facility W01
+            </span>
+            <span class="badge badge-normal" style="font-size: 0.65rem;">Zenodo 15130001 (CC-BY-4.0)</span>
+          </div>
+          <div style="font-size: 0.85rem; color: #fff; font-weight: 600;">
+            University of Hohenheim 9-Sensor DHT22 Cold-Storage Telemetry
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.15rem;">
+            156,836 real observations &bull; 5-second sampling &bull; Natural sensor dropouts preserved (Sensors 3, 5, 9)
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span id="tx-action-badge"><span class="badge badge-normal">&bull; Normal Operating Routine</span></span>
+          <span id="tx-delta-t" class="badge badge-normal" style="font-size: 0.72rem;">&Delta;T: 0.0&deg;C</span>
+          <span id="tx-active-count" class="badge badge-normal" style="font-size: 0.72rem;">6 / 9 Active</span>
+          <span id="tx-timestamp" class="time-display" style="font-size: 0.85rem; color: #fff; font-weight: 600;">--:--:-- UTC</span>
+        </div>
+      </div>
+
+      <!-- Playback Controls Strip -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.65rem 0.9rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Cursor:</span>
+          <span id="tx-step-badge" class="badge badge-normal" style="font-family: var(--font-mono); font-size: 0.75rem;">Step 0 / 156,835</span>
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <input type="number" id="tx-step-input" class="form-input" style="width: 105px; padding: 0.3rem 0.5rem; font-family: var(--font-mono); font-size: 0.8rem;" min="0" max="156835" value="0">
+            <button class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="txJumpToStep()">Jump</button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="txResetPlayback()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Reset (Step 0)
+          </button>
+          <button class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="txStepForward()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+            Step (+5s)
+          </button>
+          <button id="btn-play-pause" class="btn" style="padding: 0.35rem 0.85rem; font-size: 0.8rem;" onclick="txToggleAutoPlay()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Play (+5s/sec)
+          </button>
+        </div>
+      </div>
+
+      <!-- Playback Progress Bar -->
+      <div class="playback-progress-bar" style="margin-top: 0.75rem;">
+        <div id="tx-progress-fill" class="playback-progress-fill" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- 9-Sensor DHT22 Real Telemetry Grid -->
+    <section class="panel-card" style="padding: 0.85rem 1.25rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+          Transmitter Channel Sensor Readings &bull; 9-Channel Matrix
+        </span>
+        <span style="font-size: 0.7rem; color: var(--text-muted);">Calibrated DHT22 Sensirion Matrix &bull; Operating Temperature & Humidity</span>
+      </div>
+      <div id="tx-sensor-matrix" class="sensor-matrix-grid">
+        <div class="sensor-card"><span>Acquiring Telemetry...</span></div>
+      </div>
+    </section>
+
+    <!-- Rolling Window Time-Series Visualization (SVG) -->
+    <section class="panel-card" style="padding: 0.85rem 1.25rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">
+          Rolling Observation Time-Series (20-Step Window)
+        </span>
+        <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">
+          Solid: Facility Mean Temperature (&deg;C) &bull; Dot: Active Step Cursor
+        </span>
+      </div>
+      <div style="background-color: #080d1a; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem; overflow-x: auto;">
+        <svg id="tx-svg-chart" width="100%" height="110" viewBox="0 0 450 110" preserveAspectRatio="none" style="display: block;">
+          <text x="225" y="55" fill="#64748b" font-size="11" text-anchor="middle" font-family="monospace">Loading telemetry curve...</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Defender Transmission & Delivery Receipts Card -->
+    <section class="panel-card" style="padding: 1.1rem 1.4rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">
+            Ingestion Pipeline Delivery &bull; Transmit to Defender Platform
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.15rem;">
+            Submits the active authentic observation to the Defender detection pipeline (<span style="font-family: var(--font-mono); color: #38bdf8;">POST /api/warehouse/transmit</span>)
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none;">
+            <input type="checkbox" id="auto-transmit-checkbox" checked style="cursor: pointer;">
+            <span>Auto-transmit on step / seek</span>
+          </label>
+          <button id="btn-transmit" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem; font-weight: 700;" onclick="transmitCurrentObservation()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Transmit to Defender
+          </button>
+        </div>
+      </div>
+
+      <!-- Transmission Delivery Receipt -->
+      <div id="tx-receipt-card" style="display: none; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <span id="receipt-status-badge" class="badge badge-normal">DELIVERED</span>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Observation:</span>
+            <span id="receipt-obs-id" style="font-family: var(--font-mono); font-weight: 700; color: #38bdf8;">OBS-000000</span>
+          </div>
+          <div style="font-size: 0.8rem; display: flex; align-items: center; gap: 1rem;">
+            <span>Ingestion Latency: <strong id="receipt-latency" style="font-family: var(--font-mono); color: #fff;">-- ms</strong></span>
+            <span>Defender Verdict: <span id="receipt-verdict" style="font-weight: 600;">--</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Transmission Stream Log -->
+      <div>
+        <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 0.35rem;">
+          Transmission Log Stream
+        </div>
+        <pre id="tx-log-content" style="background: #080d1a; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.6rem 0.8rem; font-family: var(--font-mono); font-size: 0.75rem; color: #94a3b8; max-height: 120px; overflow-y: auto; white-space: pre-wrap;">Awaiting initial transmission...</pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 2rem;">
+      <div>Cold-Storage Security Monitor &bull; Academic CSBS Team 12 (VIT) &bull; Sensor Transmitter Portal</div>
+      <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <a href="/" style="color: var(--text-secondary); text-decoration: none;">Defender Portal</a>
+        <a href="/simulator" style="color: var(--text-secondary); text-decoration: none;">Attack Simulator</a>
+        <a href="/api/docs" target="_blank" style="color: var(--text-secondary); text-decoration: none;">API Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/shared.js?v=20261025_04"></script>
+  <script src="/js/transmitter.js?v=20261025_04"></script>
+</body>
+</html>

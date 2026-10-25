@@ -1,7 +1,0 @@
-Attack Class,Total Samples,Detected Samples,Detection Rate,Precision,Recall,F1-Score,Mean Latency (steps),Median Latency,P95 Latency,Episode Detection Rate
-capacity_manipulation,1600,1600,1.0000,1.0000,1.0000,1.0000,0.00,0.00,0.00,1.0000
-inventory_manipulation,1600,1600,1.0000,1.0000,1.0000,1.0000,0.00,0.00,0.00,1.0000
-sensor_spoofing,1600,1600,1.0000,1.0000,1.0000,1.0000,0.00,0.00,0.00,1.0000
-replay_attack,1600,909,0.5681,1.0000,0.5681,0.7246,0.34,0.00,5.00,1.0000
-coordinated_weak,1600,76,0.0475,1.0000,0.0475,0.0907,0.00,0.00,0.00,0.9500
-multi_source,1600,1600,1.0000,1.0000,1.0000,1.0000,0.00,0.00,0.00,1.0000

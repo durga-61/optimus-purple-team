@@ -1,14 +1,29 @@
 /**
- * Live Operations & Sensor Monitor - Client Application
- * Communicates exclusively with the warehouse simulation endpoints.
- * Displays raw operational records and sensor readings without security evaluations.
+ * Cold-Storage Operations & Sensor Monitor - Client Application
+ * Communicates exclusively with the FastAPI warehouse / data source endpoints.
+ * Displays raw operational records and 9-sensor DHT22 telemetry without security evaluations.
  */
 
 const API_BASE = '/api';
 const POLL_INTERVAL_MS = 3000;
 let isRequestInProgress = false;
 let isMutatingState = false;
+let isContinuousPlaying = false;
+let continuousTimer = null;
 let currentGeneration = 0;
+
+// Sensor metadata mappings
+const SENSOR_ROLES = {
+  'SENSOR01': 'Ambient Room Central (Fixed)',
+  'SENSOR02': 'Ambient Validation (Fixed)',
+  'SENSOR03': 'Storage Corner (Fixed)',
+  'SENSOR04': 'Wall-Mounted Monitor (Fixed)',
+  'SENSOR05': 'Mobile Experimental Unit',
+  'SENSOR06': 'Ambient Facility Monitor (Fixed)',
+  'SENSOR07': 'Door Entry Perimeter (Fixed)',
+  'SENSOR08': 'Cooling Unit Evaporator (Fixed)',
+  'SENSOR09': 'Mobile Temperature Probe',
+};
 
 // DOM Elements
 const el = {
@@ -17,62 +32,47 @@ const el = {
   healthDot: document.getElementById('health-dot'),
   currentTime: document.getElementById('current-time'),
 
-  // Section 1: Current Observation
+  // Source Notice & Progress
+  sourceDescription: document.getElementById('source-description'),
+  sourceBadge: document.getElementById('source-badge'),
+  actionBadgeContainer: document.getElementById('action-badge-container'),
+  playbackFill: document.getElementById('playback-fill'),
+
+  // Section 1: Summary Cells
   opsWhId: document.getElementById('ops-wh-id'),
   opsWhStep: document.getElementById('ops-wh-step'),
   opsLastTimestamp: document.getElementById('ops-last-timestamp'),
   currentTemp: document.getElementById('ops-current-temp'),
   currentHum: document.getElementById('ops-current-hum'),
-  currentOcc: document.getElementById('ops-current-occ'),
+  currentDeltaT: document.getElementById('ops-current-delta-t'),
+  currentActiveSensors: document.getElementById('ops-current-active-sensors'),
+  currentAction: document.getElementById('ops-current-action'),
   currentInv: document.getElementById('ops-current-inv'),
   currentFreeCap: document.getElementById('ops-current-free-cap'),
-  currentTotalCap: document.getElementById('ops-current-total-cap'),
-  currentInbound: document.getElementById('ops-current-inbound'),
-  currentOutbound: document.getElementById('ops-current-outbound'),
+  currentFlow: document.getElementById('ops-current-flow'),
 
-  // Section 2: Sensor / Operational Metrics
-  temp: document.getElementById('ops-temp'),
-  humidity: document.getElementById('ops-humidity'),
-  occupancy: document.getElementById('ops-occupancy'),
-  occupancySub: document.getElementById('ops-occupancy-sub'),
-  occupancyBar: document.getElementById('ops-occupancy-bar'),
-
-  inventory: document.getElementById('ops-inventory'),
-  freeCapacity: document.getElementById('ops-free-capacity'),
-  totalCapacity: document.getElementById('ops-total-capacity'),
-  invRatio: document.getElementById('ops-inv-ratio'),
-  totalCapRatio: document.getElementById('ops-total-cap-ratio'),
-  capBar: document.getElementById('ops-cap-bar'),
-
-  inbound: document.getElementById('ops-inbound'),
-  outbound: document.getElementById('ops-outbound'),
-  netFlow: document.getElementById('ops-net-flow'),
-
-  // Charts
-  chartValTemp: document.getElementById('chart-val-temp'),
-  chartSvgTemp: document.getElementById('chart-svg-temp'),
-  chartValInv: document.getElementById('chart-val-inv'),
-  chartSvgInv: document.getElementById('chart-svg-inv'),
-  chartValHum: document.getElementById('chart-val-hum'),
-  chartSvgHum: document.getElementById('chart-svg-hum'),
-  chartValOcc: document.getElementById('chart-val-occ'),
-  chartSvgOcc: document.getElementById('chart-svg-occ'),
+  // Section 2: Sensor Matrix
+  sensorMatrix: document.getElementById('sensor-matrix'),
 
   // Section 3: History Table
   historyTbody: document.getElementById('ops-history-tbody'),
 
-  // Section 4: Simulation Controls
+  // Section 4: Controls
   btnStep: document.getElementById('btn-ops-step'),
+  btnContinuous: document.getElementById('btn-ops-continuous'),
+  txtContinuous: document.getElementById('txt-continuous'),
+  seekInput: document.getElementById('ops-seek-step'),
+  btnSeek: document.getElementById('btn-ops-seek'),
   btnReset: document.getElementById('btn-ops-reset'),
+  btnToggleMode: document.getElementById('btn-ops-toggle-mode'),
   controlStatus: document.getElementById('ops-control-status'),
 };
 
-// Utilities
 function formatTimestamp(isoString) {
   if (!isoString) return '--:--:--';
   try {
     const d = new Date(isoString);
-    return d.toTimeString().split(' ')[0];
+    return d.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
   } catch (e) {
     return isoString;
   }
@@ -90,14 +90,14 @@ updateClock();
 function setControlsDisabled(disabled) {
   if (el.btnStep) el.btnStep.disabled = disabled;
   if (el.btnReset) el.btnReset.disabled = disabled;
+  if (el.btnSeek) el.btnSeek.disabled = disabled;
 }
 
 function handleConnectionFailure(err) {
-  console.error('Failed to communicate with warehouse simulator backend:', err);
+  console.error('Failed to communicate with cold-storage backend:', err);
   if (el.connectionBanner) el.connectionBanner.classList.remove('hidden');
   if (el.backendHealth) el.backendHealth.textContent = 'OFFLINE (DISCONNECTED)';
   if (el.healthDot) el.healthDot.classList.add('offline');
-  document.body.classList.add('backend-offline');
   setControlsDisabled(true);
 }
 
@@ -105,13 +105,12 @@ function restoreOnlineStatus() {
   if (el.connectionBanner) el.connectionBanner.classList.add('hidden');
   if (el.backendHealth) el.backendHealth.textContent = 'ONLINE';
   if (el.healthDot) el.healthDot.classList.remove('offline');
-  document.body.classList.remove('backend-offline');
   if (!isMutatingState) {
     setControlsDisabled(false);
   }
 }
 
-// In-memory operator session token (NOT stored in localStorage for security)
+// In-memory operator session token
 let inMemoryOperatorToken = null;
 
 async function fetchJson(url, options = {}) {
@@ -127,7 +126,7 @@ async function fetchJson(url, options = {}) {
   });
 
   if (res.status === 401) {
-    const promptMsg = 'Operator authentication required. Please enter your Operator Token for this session:';
+    const promptMsg = 'Operator authentication required. Please enter your Operator Token:';
     const entered = window.prompt(promptMsg);
     if (entered && entered.trim()) {
       inMemoryOperatorToken = entered.trim();
@@ -139,331 +138,295 @@ async function fetchJson(url, options = {}) {
           body: JSON.stringify({ token: inMemoryOperatorToken }),
         });
       } catch (loginErr) {
-        console.warn('Operator session login failed:', loginErr);
+        console.warn('Session login error:', loginErr);
       }
       headers['Authorization'] = `Bearer ${inMemoryOperatorToken}`;
-      const retryRes = await fetch(url, {
-        credentials: 'same-origin',
-        headers,
-        ...options,
-      });
-      if (!retryRes.ok) {
-        const errBody = await retryRes.text();
-        throw new Error(`HTTP ${retryRes.status}: ${errBody}`);
-      }
-      return await retryRes.json();
+      return fetch(url, { credentials: 'same-origin', headers, ...options });
     }
   }
 
   if (!res.ok) {
     const errBody = await res.text();
-    throw new Error(`HTTP ${res.status}: ${errBody}`);
+    throw new Error(`HTTP ${res.status} ${res.statusText}: ${errBody}`);
   }
-  return await res.json();
+  return res.json();
 }
 
-// Lightweight Browser-Native SVG Chart Renderer
-function renderSvgChart(svgElement, values, color, unit, padMin = null, padMax = null) {
-  if (!svgElement) return;
-  if (!values || values.length === 0) {
-    svgElement.innerHTML = '<text x="200" y="65" text-anchor="middle" fill="#6b7280" font-size="12">No historical data</text>';
+function renderObservation(obs) {
+  if (!obs) return;
+
+  const isReal = obs.is_recorded_playback || obs.source === 'hohenheim';
+
+  // Facility and Step
+  if (el.opsWhId) el.opsWhId.textContent = obs.warehouse || 'W01';
+  if (el.opsWhStep) el.opsWhStep.textContent = `Step ${obs.step}`;
+  if (el.seekInput && !isContinuousPlaying) el.seekInput.value = obs.step;
+  if (el.opsLastTimestamp) el.opsLastTimestamp.textContent = formatTimestamp(obs.timestamp);
+
+  // Primary Telemetry
+  if (el.currentTemp) el.currentTemp.textContent = obs.temperature != null ? obs.temperature.toFixed(1) : '--';
+  if (el.currentHum) el.currentHum.textContent = obs.humidity != null ? obs.humidity.toFixed(1) : '--';
+
+  // Quality & Delta T
+  const q = obs.data_quality || {};
+  if (el.currentDeltaT) {
+    el.currentDeltaT.textContent = q.inter_sensor_temp_delta != null ? q.inter_sensor_temp_delta.toFixed(1) : '0.0';
+  }
+  if (el.currentActiveSensors) {
+    const active = q.active_sensor_count != null ? q.active_sensor_count : 9;
+    const total = q.total_sensors || 9;
+    el.currentActiveSensors.textContent = `${active} / ${total}`;
+  }
+
+  // Active Action
+  const action = obs.active_action || 'None (Normal Sealed)';
+  if (el.opsCurrentAction) el.opsCurrentAction.textContent = action;
+  if (el.actionBadgeContainer) {
+    if (obs.active_action === 'Door opened') {
+      el.actionBadgeContainer.innerHTML = `<span class="action-badge action-door-open">&bull; Door Opened Event</span>`;
+    } else if (obs.active_action === 'Door closed') {
+      el.actionBadgeContainer.innerHTML = `<span class="action-badge action-door-closed">&bull; Door Closed</span>`;
+    } else if (obs.active_action) {
+      el.actionBadgeContainer.innerHTML = `<span class="action-badge" style="background:#1e293b; color:#94a3b8; border:1px solid #334155;">&bull; ${obs.active_action}</span>`;
+    } else {
+      el.actionBadgeContainer.innerHTML = '';
+    }
+  }
+
+  // Ledger cells
+  if (el.currentInv) el.currentInv.textContent = obs.inventory != null ? `${obs.inventory.toFixed(1)}t` : 'N/A';
+  if (el.currentFreeCap) el.currentFreeCap.textContent = obs.free_capacity != null ? `${obs.free_capacity.toFixed(1)}t` : 'N/A';
+  if (el.currentFlow) {
+    if (obs.inbound != null && obs.outbound != null) {
+      el.currentFlow.textContent = `+${obs.inbound.toFixed(1)} / -${obs.outbound.toFixed(1)}t`;
+    } else {
+      el.currentFlow.textContent = 'N/A';
+    }
+  }
+
+  // Notice Banner & Mode Badge
+  if (el.sourceBadge) {
+    el.sourceBadge.textContent = isReal ? 'RECORDED DATASET PLAYBACK' : 'SYNTHETIC SIMULATOR';
+    el.sourceBadge.className = isReal ? 'badge badge-normal' : 'badge badge-low';
+  }
+
+  // 9-Sensor Matrix Grid
+  renderSensorMatrix(obs.sensors, obs.active_action);
+}
+
+function renderSensorMatrix(sensors, activeAction) {
+  if (!el.sensorMatrix) return;
+  if (!sensors || Object.keys(sensors).length === 0) {
+    el.sensorMatrix.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; padding: 0.5rem;">Multi-sensor spatial array not active in this data mode.</div>`;
     return;
   }
 
-  const width = 400;
-  const height = 130;
-  const padLeft = 36;
-  const padRight = 16;
-  const padTop = 16;
-  const padBottom = 24;
+  let html = '';
+  for (let i = 1; i <= 9; i++) {
+    const sId = `SENSOR0${i}`;
+    const sData = sensors[sId] || {};
+    const t = sData.temperature;
+    const h = sData.humidity;
+    const isDropout = t == null || h == null;
+    const role = SENSOR_ROLES[sId] || 'Storage Zone';
 
-  const chartW = width - padLeft - padRight;
-  const chartH = height - padTop - padBottom;
-
-  let min = Math.min(...values);
-  let max = Math.max(...values);
-
-  if (padMin !== null) min = Math.min(min, padMin);
-  if (padMax !== null) max = Math.max(max, padMax);
-
-  if (min === max) {
-    min = min - 1;
-    max = max + 1;
-  } else {
-    const buffer = (max - min) * 0.12;
-    min -= buffer;
-    max += buffer;
+    html += `
+      <div class="sensor-card ${isDropout ? 'dropout' : ''}">
+        <div class="sensor-header">
+          <span style="color: #fff;">${sId}</span>
+          ${isDropout
+            ? `<span class="badge" style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid #ef4444; font-size: 0.65rem;">DROPOUT</span>`
+            : `<span class="badge badge-normal" style="font-size: 0.65rem;">ONLINE</span>`}
+        </div>
+        <div style="font-size: 0.7rem; color: var(--text-muted);">${role}</div>
+        <div class="sensor-readings" style="margin-top: 0.25rem;">
+          <span style="color: var(--telemetry-sky);">${t != null ? t.toFixed(1) + '°C' : '<span style="color:#ef4444;">NaN</span>'}</span>
+          <span style="color: var(--telemetry-indigo);">${h != null ? h.toFixed(1) + '%' : '<span style="color:#ef4444;">NaN</span>'}</span>
+        </div>
+      </div>
+    `;
   }
-
-  const n = values.length;
-  const points = values.map((v, i) => {
-    const x = n === 1 ? padLeft + chartW / 2 : padLeft + (i / (n - 1)) * chartW;
-    const y = padTop + chartH - ((v - min) / (max - min)) * chartH;
-    return { x, y, v };
-  });
-
-  const polylinePoints = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-
-  // Area under line
-  const firstX = points[0].x.toFixed(1);
-  const lastX = points[points.length - 1].x.toFixed(1);
-  const bottomY = (padTop + chartH).toFixed(1);
-  const areaPoints = `${firstX},${bottomY} ${polylinePoints} ${lastX},${bottomY}`;
-
-  // Grid lines
-  const midVal = ((min + max) / 2).toFixed(1);
-  const midY = (padTop + chartH / 2).toFixed(1);
-
-  let dotsHtml = '';
-  if (n <= 30) {
-    dotsHtml = points.map(p => `
-      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${color}" stroke="#0f172a" stroke-width="1.5">
-        <title>Value: ${p.v.toFixed(2)}${unit}</title>
-      </circle>
-    `).join('');
-  }
-
-  svgElement.innerHTML = `
-    <!-- Horizontal Gridlines -->
-    <line x1="${padLeft}" y1="${padTop}" x2="${width - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
-    <line x1="${padLeft}" y1="${midY}" x2="${width - padRight}" y2="${midY}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
-    <line x1="${padLeft}" y1="${bottomY}" x2="${width - padRight}" y2="${bottomY}" stroke="rgba(255,255,255,0.12)" />
-
-    <!-- Y-Axis Labels -->
-    <text x="${padLeft - 6}" y="${padTop + 4}" fill="#64748b" font-size="9" font-family="monospace" text-anchor="end">${max.toFixed(1)}</text>
-    <text x="${padLeft - 6}" y="${midY}" fill="#475569" font-size="9" font-family="monospace" text-anchor="end">${midVal}</text>
-    <text x="${padLeft - 6}" y="${bottomY}" fill="#64748b" font-size="9" font-family="monospace" text-anchor="end">${min.toFixed(1)}</text>
-
-    <!-- Gradient Area -->
-    <defs>
-      <linearGradient id="grad-${color.replace('#', '')}" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="${color}" stop-opacity="0.25" />
-        <stop offset="100%" stop-color="${color}" stop-opacity="0.0" />
-      </linearGradient>
-    </defs>
-    <polygon points="${areaPoints}" fill="url(#grad-${color.replace('#', '')})" />
-
-    <!-- Trend Line -->
-    <polyline points="${polylinePoints}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-
-    <!-- Data Points -->
-    ${dotsHtml}
-  `;
+  el.sensorMatrix.innerHTML = html;
 }
 
-// Render Dashboard Elements
-function renderOperationsDashboard(currentObs, historyData) {
-  if (!currentObs) return;
-
-  const totalCap = currentObs.capacity || currentObs.total_capacity || 50.0;
-
-  // Section 1: Current Observation
-  if (el.opsWhId) el.opsWhId.textContent = currentObs.warehouse || 'W01';
-  if (el.opsWhStep) el.opsWhStep.textContent = `Step ${currentObs.step}`;
-  if (el.opsLastTimestamp) el.opsLastTimestamp.textContent = `${formatTimestamp(currentObs.timestamp)} UTC`;
-
-  if (el.currentTemp) el.currentTemp.textContent = currentObs.temperature.toFixed(1);
-  if (el.currentHum) el.currentHum.textContent = currentObs.humidity.toFixed(1);
-  if (el.currentOcc) el.currentOcc.textContent = currentObs.occupancy.toFixed(1);
-  if (el.currentInv) el.currentInv.textContent = currentObs.inventory.toFixed(1);
-  if (el.currentFreeCap) el.currentFreeCap.textContent = currentObs.free_capacity.toFixed(1);
-  if (el.currentTotalCap) el.currentTotalCap.textContent = totalCap.toFixed(1);
-  if (el.currentInbound) el.currentInbound.textContent = currentObs.inbound.toFixed(1);
-  if (el.currentOutbound) el.currentOutbound.textContent = currentObs.outbound.toFixed(1);
-
-  // Section 2: Sensor / Operational Metrics
-  if (el.temp) el.temp.textContent = `${currentObs.temperature.toFixed(1)} °C`;
-  if (el.humidity) el.humidity.textContent = `${currentObs.humidity.toFixed(1)} %`;
-  if (el.occupancy) el.occupancy.textContent = `${currentObs.occupancy.toFixed(1)} %`;
-  if (el.occupancySub) el.occupancySub.textContent = `${currentObs.occupancy.toFixed(1)}%`;
-  if (el.occupancyBar) {
-    el.occupancyBar.style.width = `${Math.min(100, Math.max(0, currentObs.occupancy))}%`;
+function renderHistory(observations) {
+  if (!el.historyTbody) return;
+  if (!observations || observations.length === 0) {
+    el.historyTbody.innerHTML = `<tr><td colspan="8" class="empty-state">No observations recorded yet.</td></tr>`;
+    return;
   }
 
-  if (el.inventory) el.inventory.textContent = `${currentObs.inventory.toFixed(1)} t`;
-  if (el.freeCapacity) el.freeCapacity.textContent = `${currentObs.free_capacity.toFixed(1)} t`;
-  if (el.totalCapacity) el.totalCapacity.textContent = `${totalCap.toFixed(1)} t`;
-  if (el.invRatio) el.invRatio.textContent = currentObs.inventory.toFixed(1);
-  if (el.totalCapRatio) el.totalCapRatio.textContent = totalCap.toFixed(1);
+  const rowsHtml = observations.slice().reverse().map(obs => {
+    const t = obs.temperature != null ? obs.temperature.toFixed(1) : '--';
+    const h = obs.humidity != null ? obs.humidity.toFixed(1) : '--';
+    const action = obs.active_action || 'Sealed Normal';
+    const q = obs.data_quality || {};
+    const activeSensors = q.active_sensor_count != null ? `${q.active_sensor_count}/9` : '9/9';
+    const deltaT = q.inter_sensor_temp_delta != null ? `${q.inter_sensor_temp_delta.toFixed(1)}°C` : '0.0°C';
+    const healthBadge = q.has_missing_data
+      ? `<span class="badge" style="background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid #f59e0b; font-size: 0.7rem;">PARTIAL NaN</span>`
+      : `<span class="badge badge-normal" style="font-size: 0.7rem;">COMPLETE</span>`;
 
-  const invPct = totalCap > 0 ? (currentObs.inventory / totalCap) * 100 : 0;
-  if (el.capBar) {
-    el.capBar.style.width = `${Math.min(100, Math.max(0, invPct))}%`;
-  }
-
-  if (el.inbound) el.inbound.textContent = `${currentObs.inbound.toFixed(1)} t`;
-  if (el.outbound) el.outbound.textContent = `${currentObs.outbound.toFixed(1)} t`;
-  const net = currentObs.inbound - currentObs.outbound;
-  if (el.netFlow) {
-    const sign = net > 0 ? '+' : '';
-    el.netFlow.textContent = `${sign}${net.toFixed(1)} t`;
-    el.netFlow.style.color = net > 0 ? 'var(--telemetry-emerald)' : (net < 0 ? 'var(--telemetry-amber)' : 'var(--text-primary)');
-  }
-
-  // Historical Charts & Table
-  const observations = (historyData && historyData.observations) ? historyData.observations : [currentObs];
-
-  if (el.chartValTemp) el.chartValTemp.textContent = `${currentObs.temperature.toFixed(1)} °C`;
-  if (el.chartValInv) el.chartValInv.textContent = `${currentObs.inventory.toFixed(1)} t`;
-  if (el.chartValHum) el.chartValHum.textContent = `${currentObs.humidity.toFixed(1)} %`;
-  if (el.chartValOcc) el.chartValOcc.textContent = `${currentObs.occupancy.toFixed(1)} %`;
-
-  const temps = observations.map(o => o.temperature);
-  const invs = observations.map(o => o.inventory);
-  const hums = observations.map(o => o.humidity);
-  const occs = observations.map(o => o.occupancy);
-
-  renderSvgChart(el.chartSvgTemp, temps, '#38bdf8', '°C');
-  renderSvgChart(el.chartSvgInv, invs, '#10b981', 't');
-  renderSvgChart(el.chartSvgHum, hums, '#818cf8', '%');
-  renderSvgChart(el.chartSvgOcc, occs, '#f59e0b', '%');
-
-  // Section 3: History Table (Newest observations at the top)
-  if (el.historyTbody) {
-    const reversed = [...observations].reverse();
-    el.historyTbody.innerHTML = reversed.map((obs, idx) => `
-      <tr class="${idx === 0 ? 'row-latest' : ''}">
-        <td style="font-weight: 700; color: #fff;">
-          Step ${obs.step}
-          ${idx === 0 ? '<span class="latest-pill">LATEST</span>' : ''}
-        </td>
-        <td style="color: var(--text-muted);">${formatTimestamp(obs.timestamp)} UTC</td>
-        <td style="color: var(--telemetry-sky); font-weight: 600;">${obs.temperature.toFixed(1)} &deg;C</td>
-        <td style="color: var(--telemetry-indigo);">${obs.humidity.toFixed(1)} %</td>
-        <td style="color: var(--telemetry-amber);">${obs.occupancy.toFixed(1)} %</td>
-        <td style="color: var(--telemetry-emerald); font-weight: 600;">${obs.inventory.toFixed(1)} t</td>
-        <td style="color: var(--telemetry-cyan);">${obs.free_capacity.toFixed(1)} t</td>
-        <td style="color: var(--telemetry-emerald);">${obs.inbound.toFixed(1)} t</td>
-        <td style="color: var(--telemetry-amber);">${obs.outbound.toFixed(1)} t</td>
+    return `
+      <tr>
+        <td style="font-family: var(--font-mono); font-weight: 600;">${obs.step}</td>
+        <td style="font-family: var(--font-mono); color: var(--text-secondary); font-size: 0.75rem;">${formatTimestamp(obs.timestamp)}</td>
+        <td style="font-family: var(--font-mono); color: var(--telemetry-sky);">${t}</td>
+        <td style="font-family: var(--font-mono); color: var(--telemetry-indigo);">${h}</td>
+        <td>${activeSensors}</td>
+        <td>${deltaT}</td>
+        <td><span style="font-size: 0.75rem; color: ${action.includes('opened') ? '#f59e0b' : '#94a3b8'};">${action}</span></td>
+        <td>${healthBadge}</td>
       </tr>
-    `).join('');
-  }
+    `;
+  }).join('');
+
+  el.historyTbody.innerHTML = rowsHtml;
 }
 
-// Data Fetching Coordinator
 async function refreshOperations() {
   if (isRequestInProgress || isMutatingState) return;
   isRequestInProgress = true;
-  const gen = currentGeneration;
+  const thisGen = ++currentGeneration;
 
   try {
-    const [currentObs, historyData] = await Promise.all([
+    const [currentObs, historyRes, playbackRes] = await Promise.all([
       fetchJson(`${API_BASE}/warehouse/current`),
-      fetchJson(`${API_BASE}/warehouse/history?limit=50`),
+      fetchJson(`${API_BASE}/warehouse/history?limit=25`),
+      fetchJson(`${API_BASE}/warehouse/playback`).catch(() => null),
     ]);
 
-    if (gen === currentGeneration && !isMutatingState) {
-      restoreOnlineStatus();
-      try {
-        renderOperationsDashboard(currentObs, historyData);
-      } catch (renderErr) {
-        console.error('Error rendering operations dashboard:', renderErr);
-      }
+    if (thisGen !== currentGeneration) return;
+
+    restoreOnlineStatus();
+    renderObservation(currentObs);
+    renderHistory(historyRes.observations || []);
+
+    if (playbackRes && el.playbackFill) {
+      const pct = playbackRes.progress_percent != null ? playbackRes.progress_percent : 0;
+      el.playbackFill.style.width = `${pct}%`;
     }
   } catch (err) {
-    handleConnectionFailure(err);
+    if (thisGen === currentGeneration) {
+      handleConnectionFailure(err);
+    }
   } finally {
     isRequestInProgress = false;
   }
 }
 
-// Operations Actions (Step & Reset)
-async function advanceOperationsStep() {
+async function stepOperations() {
   if (isMutatingState) return;
   isMutatingState = true;
   setControlsDisabled(true);
-  currentGeneration++;
-  const gen = currentGeneration;
-
-  if (el.controlStatus) {
-    el.controlStatus.textContent = 'Advancing simulation by one observation step...';
-  }
+  if (el.controlStatus) el.controlStatus.textContent = 'Advancing observation...';
 
   try {
-    const stepData = await fetchJson(`${API_BASE}/warehouse/step`, { method: 'POST' });
-    const historyData = await fetchJson(`${API_BASE}/warehouse/history?limit=50`);
-
-    if (gen === currentGeneration) {
-      restoreOnlineStatus();
-      try {
-        renderOperationsDashboard(stepData.observation, historyData);
-        if (el.controlStatus) {
-          el.controlStatus.textContent = `Advanced to Step ${stepData.observation.step} (Inventory: ${stepData.observation.inventory.toFixed(1)}t, Temp: ${stepData.observation.temperature.toFixed(1)}°C).`;
-        }
-      } catch (renderErr) {
-        console.error('Error rendering operations dashboard after step:', renderErr);
-      }
-    }
+    const res = await fetchJson(`${API_BASE}/warehouse/step`, { method: 'POST' });
+    restoreOnlineStatus();
+    renderObservation(res.observation);
+    await refreshOperations();
+    if (el.controlStatus) el.controlStatus.textContent = `Advanced to Step ${res.observation.step}. Evaluated by Defender.`;
   } catch (err) {
-    handleConnectionFailure(err);
-    if (el.controlStatus) {
-      el.controlStatus.textContent = `Failed to advance step: ${err.message}`;
-    }
-    alert(`Failed to advance simulation step: ${err.message}`);
+    console.error('Failed to advance observation:', err);
+    if (el.controlStatus) el.controlStatus.textContent = `Error: ${err.message}`;
   } finally {
     isMutatingState = false;
     setControlsDisabled(false);
   }
 }
 
-async function resetOperationsSimulation() {
-  if (isMutatingState) return;
-  if (!confirm('Reset warehouse simulation and baseline telemetry?')) return;
+async function seekPlayback() {
+  if (!el.seekInput) return;
+  const targetStep = parseInt(el.seekInput.value, 10);
+  if (isNaN(targetStep) || targetStep < 0) return;
 
   isMutatingState = true;
   setControlsDisabled(true);
-  currentGeneration++;
-  const gen = currentGeneration;
-
-  if (el.controlStatus) {
-    el.controlStatus.textContent = 'Resetting warehouse simulation to initial baseline...';
-  }
+  if (el.controlStatus) el.controlStatus.textContent = `Seeking to step ${targetStep}...`;
 
   try {
-    // Reset via warehouse reset endpoint (or security reset alias)
-    try {
-      await fetchJson(`${API_BASE}/warehouse/reset`, { method: 'POST' });
-    } catch (e) {
-      await fetchJson(`${API_BASE}/security/reset`, { method: 'POST' });
-    }
-
-    const [currentObs, historyData] = await Promise.all([
-      fetchJson(`${API_BASE}/warehouse/current`),
-      fetchJson(`${API_BASE}/warehouse/history?limit=50`),
-    ]);
-
-    if (gen === currentGeneration) {
-      restoreOnlineStatus();
-      try {
-        renderOperationsDashboard(currentObs, historyData);
-        if (el.controlStatus) {
-          el.controlStatus.textContent = 'Simulation reset to Step 0 baseline.';
-        }
-      } catch (renderErr) {
-        console.error('Error rendering operations dashboard after reset:', renderErr);
-      }
-    }
+    const res = await fetchJson(`${API_BASE}/warehouse/seek`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ step: targetStep }),
+    });
+    restoreOnlineStatus();
+    renderObservation(res.observation);
+    await refreshOperations();
+    if (el.controlStatus) el.controlStatus.textContent = `Jumped to step ${targetStep}. Evaluated by Defender.`;
   } catch (err) {
-    handleConnectionFailure(err);
-    if (el.controlStatus) {
-      el.controlStatus.textContent = `Failed to reset: ${err.message}`;
-    }
-    alert(`Failed to reset: ${err.message}`);
+    console.error('Seek error:', err);
+    if (el.controlStatus) el.controlStatus.textContent = `Seek error: ${err.message}`;
   } finally {
     isMutatingState = false;
     setControlsDisabled(false);
   }
 }
 
-// Event Listeners
-if (el.btnStep) {
-  el.btnStep.addEventListener('click', advanceOperationsStep);
+async function resetOperations() {
+  if (isMutatingState) return;
+  if (!window.confirm('Reset playback to initial step 0?')) return;
+
+  isMutatingState = true;
+  setControlsDisabled(true);
+  if (el.controlStatus) el.controlStatus.textContent = 'Resetting data source and defender pipeline...';
+
+  try {
+    await fetchJson(`${API_BASE}/warehouse/reset`, { method: 'POST' });
+    restoreOnlineStatus();
+    await refreshOperations();
+    if (el.controlStatus) el.controlStatus.textContent = 'Reset complete. Cursor at Step 0.';
+  } catch (err) {
+    console.error('Reset error:', err);
+    if (el.controlStatus) el.controlStatus.textContent = `Reset error: ${err.message}`;
+  } finally {
+    isMutatingState = false;
+    setControlsDisabled(false);
+  }
 }
 
-if (el.btnReset) {
-  el.btnReset.addEventListener('click', resetOperationsSimulation);
+async function toggleDataSourceMode() {
+  if (isMutatingState) return;
+  isMutatingState = true;
+  setControlsDisabled(true);
+
+  try {
+    const currentMeta = await fetchJson(`${API_BASE}/warehouse/metadata`);
+    const nextMode = currentMeta.is_real_dataset ? 'simulator' : 'hohenheim';
+    if (el.controlStatus) el.controlStatus.textContent = `Switching mode to ${nextMode}...`;
+
+    await fetchJson(`${API_BASE}/warehouse/mode/${nextMode}`, { method: 'POST' });
+    restoreOnlineStatus();
+    await refreshOperations();
+    if (el.controlStatus) el.controlStatus.textContent = `Mode switched to ${nextMode}.`;
+  } catch (err) {
+    console.error('Mode switch error:', err);
+    if (el.controlStatus) el.controlStatus.textContent = `Mode switch error: ${err.message}`;
+  } finally {
+    isMutatingState = false;
+    setControlsDisabled(false);
+  }
 }
 
-// Start polling
+function toggleContinuous() {
+  isContinuousPlaying = !isContinuousPlaying;
+  if (isContinuousPlaying) {
+    if (el.txtContinuous) el.txtContinuous.textContent = 'Pause Telemetry';
+    if (el.btnContinuous) el.btnContinuous.classList.add('btn-primary');
+    continuousTimer = setInterval(() => {
+      stepOperations();
+    }, 1500);
+  } else {
+    if (el.txtContinuous) el.txtContinuous.textContent = 'Auto-Play Telemetry';
+    if (el.btnContinuous) el.btnContinuous.classList.remove('btn-primary');
+    if (continuousTimer) {
+      clearInterval(continuousTimer);
+      continuousTimer = null;
+    }
+  }
+}
+
+// Initialize Polling
 refreshOperations();
 setInterval(refreshOperations, POLL_INTERVAL_MS);

@@ -19,13 +19,20 @@ class AppSettings(BaseSettings):
     )
 
     # General Settings
-    APP_NAME: str = "Organization Information Security Monitoring & AI Attack Simulation"
-    APP_VERSION: str = "0.1.0"
+    APP_NAME: str = "Cold-Storage Security Monitor: Data Integrity Monitoring Platform"
+    APP_VERSION: str = "3.1.0"
     DEBUG: bool = False
     HOST: str = "127.0.0.1"
     PORT: int = 8000
 
-    # Simulator Settings
+    # Data Source Architecture Settings
+    DATA_SOURCE_MODE: str = "hohenheim"  # "hohenheim" or "simulator"
+    HOHENHEIM_DB_PATH: str = "data/processed/hohenheim/hohenheim_synchronized.db"
+    HOHENHEIM_RAW_DIR: str = "data/raw/hohenheim"
+    ENVIRONMENTAL_DELTA_T_MAX: float = 5.0  # Max degrees C inter-sensor discrepancy
+    ENVIRONMENTAL_DELTA_H_MAX: float = 25.0  # Max % RH inter-sensor discrepancy
+
+    # Simulator Settings (retained for isolated testing / purple benchmarking)
     SIMULATION_INTERVAL_SECONDS: float = 2.0
     DEFAULT_RANDOM_SEED: Optional[int] = 42
     WAREHOUSE_ID: str = "W01"
@@ -82,4 +89,3 @@ class AppSettings(BaseSettings):
 
 
 settings = AppSettings()
-

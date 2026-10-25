@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#0b0f19"/>
+  <!-- Outer Shield Contour -->
+  <path d="M32 8 L50 16 V30 C50 42 32 54 32 54 C32 54 14 42 14 30 V16 Z" 
+        fill="#111827" 
+        stroke="#2563eb" 
+        stroke-width="2.5" 
+        stroke-linejoin="round"/>
+  <!-- Cold-Storage Central Snowflake / Sensor Node Lattice -->
+  <!-- Vertical axis -->
+  <line x1="32" y1="18" x2="32" y2="44" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Diagonal axis 1 -->
+  <line x1="21" y1="25" x2="43" y2="37" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Diagonal axis 2 -->
+  <line x1="21" y1="37" x2="43" y2="25" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Branch ticks -->
+  <path d="M29 21 L32 24 L35 21" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M29 41 L32 38 L35 41" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M23 29 L26 28 L25 32" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M41 35 L38 36 L39 32" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M25 32 L26 36 L23 35" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M39 32 L38 28 L41 29" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Center Sensor Node -->
+  <circle cx="32" cy="31" r="3" fill="#38bdf8"/>
+  <circle cx="32" cy="31" r="1.5" fill="#ffffff"/>
+  <!-- Node dots at extremities -->
+  <circle cx="32" cy="18" r="1.5" fill="#60a5fa"/>
+  <circle cx="32" cy="44" r="1.5" fill="#60a5fa"/>
+  <circle cx="21" cy="25" r="1.5" fill="#60a5fa"/>
+  <circle cx="43" cy="37" r="1.5" fill="#60a5fa"/>
+  <circle cx="21" cy="37" r="1.5" fill="#60a5fa"/>
+  <circle cx="43" cy="25" r="1.5" fill="#60a5fa"/>
+</svg>

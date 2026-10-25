@@ -1,4 +1,0 @@
-configuration,precision,recall,f1,false_positive_rate,accuracy,evasion_rate,mean_risk_score
-optimus_static,1.0,0.7693,0.8696,0.0,0.8154,0.2307,0.3985
-optimus_invariants,1.0,0.944,0.9712,0.0,0.9552,0.056,0.5024
-optimus_combined,1.0,0.944,0.9712,0.0,0.9552,0.056,0.4704

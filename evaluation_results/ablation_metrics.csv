@@ -1,9 +1,0 @@
-Pipeline Configuration,Detection Rate,False Positive Rate,False Negative Rate,Precision,Recall,F1-Score,Accuracy
-ml_only,0.0344,0.0013,0.9656,0.9910,0.0344,0.0664,0.2273
-semantic_only,0.6101,0.0000,0.3899,1.0000,0.6101,0.7578,0.6881
-temporal_only,0.8326,0.0000,0.1674,1.0000,0.8326,0.9087,0.8661
-structural_only,0.7693,0.0013,0.2307,0.9996,0.7693,0.8694,0.8152
-semantic_plus_temporal,0.8407,0.0000,0.1593,1.0000,0.8407,0.9135,0.8726
-semantic_plus_structural,0.7693,0.0013,0.2307,0.9996,0.7693,0.8694,0.8152
-joint_decision,0.7693,0.0000,0.2307,1.0000,0.7693,0.8696,0.8154
-joint_with_suspicious,0.8372,0.0013,0.1628,0.9996,0.8372,0.9112,0.8695

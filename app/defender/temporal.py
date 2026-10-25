@@ -1,7 +1,7 @@
-"""Temporal analysis engine for stateful persistence, frequency, and decay tracking.
+"""Temporal correlation and trend analysis engine.
 
-Aggregates observations across a sliding window to escalate recurring anomalies
-and decay isolated or transient blips.
+Tracks observation history over a sliding window with exponential decay,
+measuring persistence, recurrence, frequency, and escalation patterns over time.
 """
 
 import collections
@@ -14,7 +14,7 @@ logger = logging.getLogger("defender.temporal")
 
 
 class TemporalEngine:
-    """Tracks time-series persistence, frequency, and decay of integrity violations."""
+    """Evaluates time-series persistence, recurrence, and evidence decay across sequential observations."""
 
     def __init__(
         self,
@@ -24,7 +24,7 @@ class TemporalEngine:
         self.window_size = window_size
         self.decay_factor = decay_factor
 
-        # Sliding window history of (step, semantic_score, ml_score, structural_score, has_violation)
+        # Sliding window history of (step, semantic_score, ml_score, structural_score, is_violation)
         self.window: Deque[Dict[str, Any]] = collections.deque(maxlen=window_size)
         self.consecutive_violations = 0
 
@@ -37,8 +37,11 @@ class TemporalEngine:
     ) -> TemporalResult:
         """Record observation outcomes and calculate updated temporal escalation metrics."""
         has_semantic_violation = bool(semantic_result and len(semantic_result.violated_constraints) > 0)
-        has_c3_warning = bool(
-            semantic_result and any(c.constraint == "C3" and c.status in ("VIOLATED", "WARNING") for c in semantic_result.constraints)
+        has_env_warning = bool(
+            semantic_result and any(
+                c.constraint in ("C3", "C4") and c.status in ("VIOLATED", "WARNING")
+                for c in semantic_result.constraints
+            )
         )
         has_ml_anomaly = bool(ml_result and ml_result.is_anomaly)
         has_structural = bool(
@@ -47,11 +50,11 @@ class TemporalEngine:
 
         # Evidence-grounded violation indicator for temporal escalation:
         # 1. Deterministic invariant violations (C1/C2)
-        # 2. Environmental envelope deviations (C3)
-        # 3. ML statistical anomaly at detector threshold corroborated by structural graph or high score
+        # 2. Environmental envelope / spatial deviations (C3/C4)
+        # 3. ML statistical anomaly corroborated by structural graph or high anomaly score
         is_violation = (
             has_semantic_violation
-            or has_c3_warning
+            or has_env_warning
             or (has_ml_anomaly and (has_structural or (ml_result and ml_result.anomaly_score >= 0.70)))
             or (has_structural and has_ml_anomaly)
         )
@@ -78,24 +81,24 @@ class TemporalEngine:
         self.window.append(record)
 
         # Calculate metrics over the sliding window
-        total_in_window = len(self.window)
-        if total_in_window == 0:
+        n_records = len(self.window)
+        if n_records == 0:
             return TemporalResult(
                 temporal_score=0.0,
+                status="STABLE",
                 persistence=0,
                 frequency=0.0,
                 recurrence=0,
                 window_size=self.window_size,
-                status="STABLE",
+                explanation="No historical observations recorded in temporal window.",
             )
 
-        recurrence = sum(1 for r in self.window if r["is_violation"])
-        frequency = round(recurrence / total_in_window, 2)
+        recurrence = sum(1 for item in self.window if item["is_violation"])
+        frequency = round(recurrence / n_records, 2)
 
-        # Recency-weighted decay: newest items have weight 1.0, older items scaled by decay_factor^k
+        # Recency-weighted decay score: weight = decay_factor ** age
         weighted_sum = 0.0
         max_possible_weight = 0.0
-        # Iterate from most recent (index 0) backwards
         for i, item in enumerate(reversed(self.window)):
             weight = self.decay_factor ** i
             if item["is_violation"]:
@@ -103,39 +106,44 @@ class TemporalEngine:
                 weighted_sum += weight * severity
             max_possible_weight += weight
 
-        recency_weighted_score = (
-            round(weighted_sum / max_possible_weight, 3) if max_possible_weight > 0 else 0.0
-        )
+        recency_weighted_score = weighted_sum / max_possible_weight if max_possible_weight > 0 else 0.0
 
-        # Persistence amplifier: consecutive violations rapidly escalate the temporal score
-        persistence_bonus = min(0.35, self.consecutive_violations * 0.10)
-
+        # Persistence bonus for consecutive sustained violations
+        persistence_bonus = min(0.30, self.consecutive_violations * 0.10)
         temporal_score = round(min(1.0, recency_weighted_score + persistence_bonus), 2)
 
-        # Classification of temporal state
-        # True temporal escalation requires persistence (consecutive >= 2) or recurrence (recurrence >= 2)
+        # Classification of temporal state:
+        # True escalation requires sustained persistence (>= 2) or high recurrence (>= 3)
         if self.consecutive_violations >= 3 or (self.consecutive_violations >= 2 and temporal_score >= 0.50) or recurrence >= 3:
             status = "ESCALATING"
+            explanation = (
+                f"ESCALATING THREAT: Persistent anomalies sustained over {self.consecutive_violations} consecutive steps "
+                f"({recurrence}/{n_records} violations in window, decay score: {temporal_score:.2f})."
+            )
         elif self.consecutive_violations >= 2 or recurrence >= 2:
             status = "ELEVATED"
+            explanation = (
+                f"ELEVATED RISK: Recurring anomalies observed ({recurrence}/{n_records} in window, "
+                f"persistence: {self.consecutive_violations}, decay score: {temporal_score:.2f})."
+            )
         else:
             status = "STABLE"
+            explanation = (
+                f"STABLE: Recent operations are consistent; decay score: {temporal_score:.2f}."
+            )
 
         return TemporalResult(
             temporal_score=temporal_score,
+            status=status,
             persistence=self.consecutive_violations,
             frequency=frequency,
             recurrence=recurrence,
             window_size=self.window_size,
-            status=status,
-            details={
-                "recency_score": recency_weighted_score,
-                "consecutive_steps": self.consecutive_violations,
-                "recorded_steps": total_in_window,
-            },
+            explanation=explanation,
         )
 
     def reset(self) -> None:
-        """Reset temporal state buffer."""
+        """Clear temporal window and reset persistence counters."""
         self.window.clear()
         self.consecutive_violations = 0
+        logger.info("Reset TemporalEngine sliding window and counters.")

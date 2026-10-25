@@ -19,8 +19,9 @@ class HealthResponse(BaseModel):
     """Service health and component readiness response."""
 
     status: str = Field(default="healthy", description="Overall service operational health")
-    service: str = Field(default="organization-security-platform", description="Service identifier")
-    simulator: str = Field(default="running", description="Status of the cold-storage simulator")
+    service: str = Field(default="cold-storage-security-monitor", description="Service identifier")
+    data_source: str = Field(default="hohenheim", description="Active data source provider")
+    simulator: str = Field(default="standby", description="Status of the cold-storage simulator")
     defender: str = Field(default="ready", description="Status of the DefenderService pipeline")
     timestamp: str = Field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat(),
@@ -29,33 +30,52 @@ class HealthResponse(BaseModel):
 
 
 class WarehouseStepResponse(BaseModel):
-    """Response returned when the warehouse simulation advances by one step."""
+    """Response returned when the warehouse observation advances by one discrete step."""
 
-    observation: WarehouseObservation = Field(..., description="Newly generated warehouse observation")
+    observation: WarehouseObservation = Field(..., description="Newly generated or replayed observation")
     security_analysis: SecurityAnalysisResult = Field(..., description="Actual security pipeline evaluation")
 
 
 class WarehouseObservationHistoryItem(BaseModel):
-    """Historical observation item for warehouse operations."""
+    """Historical observation item for cold-storage operations."""
 
-    step: int = Field(..., ge=0, description="Simulation step number")
+    step: int = Field(..., ge=0, description="Observation step number")
     timestamp: str = Field(..., description="ISO 8601 UTC timestamp")
     temperature: float = Field(..., description="Internal cold-storage temperature in °C")
     humidity: float = Field(..., description="Relative humidity percentage")
-    inventory: float = Field(..., ge=0, description="Recorded inventory in metric tons")
-    free_capacity: float = Field(..., ge=0, description="Available capacity in metric tons")
-    total_capacity: float = Field(..., gt=0, description="Total storage capacity in metric tons")
-    occupancy: float = Field(..., ge=0, le=100, description="Storage occupancy percentage")
-    inbound: float = Field(..., ge=0, description="Inbound shipment tonnage")
-    outbound: float = Field(..., ge=0, description="Outbound shipment tonnage")
+    inventory: Optional[float] = Field(default=None, description="Recorded inventory in metric tons (None if environmental data)")
+    free_capacity: Optional[float] = Field(default=None, description="Available capacity in metric tons (None if environmental data)")
+    total_capacity: Optional[float] = Field(default=None, description="Total storage capacity in metric tons (None if environmental data)")
+    occupancy: Optional[float] = Field(default=None, description="Storage occupancy percentage (None if environmental data)")
+    inbound: Optional[float] = Field(default=None, description="Inbound shipment tonnage (None if environmental data)")
+    outbound: Optional[float] = Field(default=None, description="Outbound shipment tonnage (None if environmental data)")
+    sensors: Optional[Dict[str, Dict[str, Optional[float]]]] = Field(default=None, description="Multi-sensor telemetry")
+    active_action: Optional[str] = Field(default=None, description="Physical operational event (e.g. Door opened)")
 
 
 class WarehouseHistoryResponse(BaseModel):
-    """Collection of recent historical observations from warehouse simulator."""
+    """Collection of recent historical observations from cold-storage monitoring."""
 
     warehouse: str = Field(..., description="Warehouse identifier")
     observations: List[WarehouseObservationHistoryItem] = Field(..., description="List of historical observation records")
 
+
+class PlaybackStatusResponse(BaseModel):
+    """Current dataset playback state and progress."""
+
+    source: str = Field(..., description="Data source name (hohenheim or simulator)")
+    is_recorded_playback: bool = Field(..., description="True if playing back real recorded dataset")
+    current_step: int = Field(..., description="Current observation step cursor")
+    total_records: int = Field(..., description="Total observation steps available in dataset")
+    progress_percent: Optional[float] = Field(default=None, description="Percentage of dataset completed")
+    timestamp: Optional[str] = Field(default=None, description="Current observation timestamp")
+    active_action: Optional[str] = Field(default=None, description="Active physical event (e.g. Door opened)")
+
+
+class SeekPlaybackRequest(BaseModel):
+    """Request payload to seek playback to a discrete step index."""
+
+    step: int = Field(..., ge=0, description="Target playback step index")
 
 
 class SecurityStatusResponse(BaseModel):
@@ -65,7 +85,7 @@ class SecurityStatusResponse(BaseModel):
     risk_score: float = Field(..., ge=0.0, le=1.0, description="Composite risk probability")
     integrity_score: float = Field(..., ge=0.0, le=100.0, description="System integrity percentage")
     active_alerts: int = Field(..., ge=0, description="Count of currently unresolved security alerts")
-    sources: int = Field(default=5, description="Number of active organizational data sources")
+    sources: int = Field(default=9, description="Number of active organizational/IoT data sources")
     last_analysis_timestamp: Optional[str] = Field(None, description="Timestamp of latest security evaluation")
     backend_health: str = Field(default="ONLINE", description="Defender backend connectivity status")
     timestamp: str = Field(
@@ -78,7 +98,7 @@ class ResetResponse(BaseModel):
     """Response returned upon system reset."""
 
     success: bool = Field(default=True)
-    message: str = Field(default="Simulator and DefenderService successfully reset to baseline.")
+    message: str = Field(default="Data source and DefenderService successfully reset to baseline.")
     timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
@@ -132,11 +152,11 @@ class AttackerObservationResponse(BaseModel):
     """Restricted operational observation response tailored for the external AI attacker."""
 
     target: str = Field(..., description="Target facility identifier (e.g., 'W01')")
-    inventory: float = Field(..., description="Reported inventory in metric tons")
-    free_capacity: float = Field(..., description="Reported free capacity in metric tons")
+    inventory: Optional[float] = Field(default=42.0, description="Reported inventory in metric tons")
+    free_capacity: Optional[float] = Field(default=8.0, description="Reported free capacity in metric tons")
     temperature: float = Field(..., description="Internal warehouse temperature in °C")
     humidity: float = Field(..., description="Relative humidity percentage")
-    occupancy: float = Field(..., description="Warehouse occupancy percentage")
+    occupancy: Optional[float] = Field(default=84.0, description="Warehouse occupancy percentage")
 
     model_config = ConfigDict(extra="forbid")
 
@@ -247,3 +267,30 @@ class HardeningRollbackResponse(BaseModel):
     restored_parameters: Dict[str, Any]
 
 
+# =====================================================================
+# Sensor Transmitter to Defender Communication Schemas
+# =====================================================================
+
+
+class TransmitObservationRequest(BaseModel):
+    """Payload to transmit an observation from Sensor Transmitter to the Defender."""
+
+    step: Optional[int] = Field(default=None, ge=0, description="Step index to transmit. If omitted, uses active cursor.")
+    observation: Optional[Dict[str, Any]] = Field(default=None, description="Explicit validated observation payload if provided.")
+
+
+class TransmitObservationResponse(BaseModel):
+    """Acknowledgement returned by the Defender to the Sensor Transmitter."""
+
+    status: str = Field(default="DELIVERED", description="Transmission delivery state")
+    observation_id: str = Field(..., description="Stable observation identifier")
+    step: int = Field(..., ge=0, description="Dataset observation step transmitted")
+    timestamp: str = Field(..., description="Observation timestamp")
+    source: str = Field(..., description="Source dataset provenance identifier")
+    sensors_transmitted: int = Field(..., description="Count of sensor channels in payload")
+    active_sensors: int = Field(..., description="Count of online non-dropout sensors")
+    defender_classification: str = Field(..., description="Defender joint classification verdict")
+    risk_score: float = Field(..., description="Computed risk anomaly score")
+    integrity_score: float = Field(..., description="Computed data integrity score")
+    latency_ms: float = Field(..., description="Total transmission and inference benchmark latency in ms")
+    security_analysis: SecurityAnalysisResult = Field(..., description="Full multi-layer analysis evidence")

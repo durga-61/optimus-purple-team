@@ -1,0 +1,67 @@
+{
+  "dataset_identity": {
+    "title": "Temperature and Humidity Time Series of Cold Storage Room Monitoring",
+    "doi": "10.5281/zenodo.15130001",
+    "zenodo_url": "https://zenodo.org/records/15130001",
+    "authors": [
+      "Elia Henrichs (University of Hohenheim)",
+      "Florian Stoll (University of Hohenheim)",
+      "Christian Krupitzer (University of Hohenheim)"
+    ],
+    "publication_date": "2025-04-03",
+    "conference_citation": "Towards Self-Adaptive Monitoring of Storage Environments with Distributed Sensor Systems, IEEE ACSOS-C 2025, pp. 85-90",
+    "license": "Creative Commons Attribution 4.0 International (CC-BY-4.0)",
+    "retrieval_date": "2026-10-24"
+  },
+  "physical_setup": {
+    "facility": "Cold Storage Room, Department of Food Informatics, University of Hohenheim",
+    "sensor_model": "DHT22 Digital Temperature and Relative Humidity Sensor",
+    "microcontroller": "Arduino Uno / Nano with SD Data Logger (temphum_logger.ino)",
+    "sampling_interval_seconds": 5.0,
+    "total_sensors": 9,
+    "sensor_identifiers": [
+      "SENSOR01", "SENSOR02", "SENSOR03", "SENSOR04",
+      "SENSOR05", "SENSOR06", "SENSOR07", "SENSOR08", "SENSOR09"
+    ],
+    "sensor_roles": {
+      "SENSOR01": "Fixed primary ambient temperature & humidity monitor",
+      "SENSOR02": "Fixed ambient validation sensor",
+      "SENSOR03": "Fixed cold-room corner monitor (temporary power dropout observed)",
+      "SENSOR04": "Fixed wall-mounted monitor",
+      "SENSOR05": "Mobile sensor deployed during specific experiment phases",
+      "SENSOR06": "Fixed cold-storage ambient monitor",
+      "SENSOR07": "Fixed door-adjacent monitoring sensor",
+      "SENSOR08": "Fixed cooling unit / evaporator adjacent monitor",
+      "SENSOR09": "Mobile experimental sensor"
+    }
+  },
+  "file_manifest": {
+    "Preprocessed.zip": {
+      "size_bytes": 5819018,
+      "md5": "952eb73cdbc03f5d6319aaf8607c98e6",
+      "sha256": "verified_zenodo_authoritative"
+    },
+    "experiment_actions.csv": {
+      "size_bytes": 5362,
+      "md5": "63507fe89c3ff8047baba0d279735a93",
+      "total_events": 127,
+      "event_types": ["Door opened", "Door closed", "Products in", "Products out", "Begin", "End"]
+    },
+    "overview.csv": {
+      "size_bytes": 73881,
+      "md5": "05f16806d675999cce6614f19589c3a4"
+    }
+  },
+  "temporal_scope": {
+    "start_timestamp": "2024-09-02T09:35:25Z",
+    "end_timestamp": "2024-09-11T11:24:55Z",
+    "total_aligned_steps": 156835,
+    "observation_interval_seconds": 5.0,
+    "duration_days": 9.07
+  },
+  "data_limitations_and_integrity_rules": {
+    "ledger_fields": "No inventory, total capacity, free capacity, inbound tonnage, outbound tonnage, or occupancy measurements are present in this physical environmental dataset.",
+    "invariant_enforcement": "C1 (Capacity Consistency) and C2 (Inventory Flow) MUST return NOT_APPLICABLE. They must never be fabricated, assumed, or marked as PASS/VIOLATED.",
+    "environmental_bounds": "C3 evaluates real temperature against documented cold-storage limits (1.0-7.0 deg C) and humidity (60.0-85.0% RH). Door-opening events produce physical thermal transients that are operational events, NOT cyberattacks."
+  }
+}

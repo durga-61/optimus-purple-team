@@ -10,8 +10,7 @@ class TestMLDetector:
     """Test suite for ML anomaly detection module."""
 
     @pytest.fixture(scope="class")
-    @classmethod
-    def detector(cls):
+    def detector(self):
         return MLDetector(random_state=42)
 
     def test_detector_initialization_and_fit(self, detector):
