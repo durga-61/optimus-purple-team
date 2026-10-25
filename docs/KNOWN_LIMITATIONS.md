@@ -1,5 +1,13 @@
 # Known Limitations and Operational Assumptions
 
+## 0. Dataset Is Fetched, Not Vendored
+
+- **No Data in Git:** Only the small provenance files (`overview.csv`, `experiment_actions.csv`, `data/DATASET_MANIFEST.json`) are committed. `Preprocessed.zip`, the extracted per-sensor CSVs, and the SQLite cache are gitignored.
+- **One-Time Setup:** run `python scripts/fetch_dataset.py` after cloning, or start with `DATA_SOURCE_MODE=simulator`. Without either, the app exits at startup with instructions.
+- **Tests:** dataset-dependent tests skip automatically when the dataset is absent (they are marked with `tests.markers.requires_hohenheim`).
+
+---
+
 ## 1. Recorded Historical Telemetry vs Live Hardware Feeds
 
 - **Recorded Playback:** The primary environmental data source is the University of Hohenheim cold-storage dataset recorded between September 2 and September 11, 2024.

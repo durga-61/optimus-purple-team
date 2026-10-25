@@ -14,7 +14,6 @@ import threading
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
-from app.api.state import app_state
 from app.config import settings
 from app.experiments.models import (
     AggregateMetrics,
@@ -26,6 +25,19 @@ from app.experiments.scenarios import SCENARIOS_CATALOG, apply_attack
 from app.simulator.models import WarehouseObservation
 
 logger = logging.getLogger("experiments.engine")
+
+
+def _app_state():
+    """Return the shared application state, importing it lazily.
+
+    ``app.api.state`` imports ``app.api.main`` (the FastAPI app), which imports the
+    experiments router, which imports this module. Resolving the state at call time
+    keeps that import chain from becoming circular, so ``app.experiments`` is
+    importable on its own.
+    """
+    from app.api.state import app_state
+
+    return app_state
 
 
 class ExperimentEngine:
@@ -88,12 +100,12 @@ class ExperimentEngine:
             now_iso = datetime.now(timezone.utc).isoformat()
 
             # Retrieve clean observation from active data source
-            clean_obs = app_state.data_source.seek(step)
+            clean_obs = _app_state().data_source.seek(step)
             orig_dict = clean_obs.model_dump()
 
             # Run through actual live Defender pipeline
             t0 = time.perf_counter()
-            analysis = app_state.defender.analyze(clean_obs)
+            analysis = _app_state().defender.analyze(clean_obs)
             latency_ms = round((time.perf_counter() - t0) * 1000.0, 2)
 
             pred = analysis.decision.classification
@@ -135,7 +147,7 @@ class ExperimentEngine:
             now_iso = datetime.now(timezone.utc).isoformat()
 
             # Retrieve baseline observation (original dataset remains untouched)
-            baseline_obs = app_state.data_source.seek(step)
+            baseline_obs = _app_state().data_source.seek(step)
             orig_dict = baseline_obs.model_dump()
 
             # For replay attacks, retrieve historical observation
@@ -143,9 +155,9 @@ class ExperimentEngine:
             if config.scenario == "replay_substitution":
                 r_step = config.replay_step if config.replay_step is not None else max(0, step - 30)
                 try:
-                    past_obs = app_state.data_source.seek(r_step)
+                    past_obs = _app_state().data_source.seek(r_step)
                     # Restore cursor back to target step
-                    app_state.data_source.seek(step)
+                    _app_state().data_source.seek(step)
                 except Exception as exc:
                     logger.warning(f"Could not load replay step {r_step}: {exc}")
 
@@ -156,7 +168,7 @@ class ExperimentEngine:
             # Ground truth is strictly NOT leaked to DefenderService!
             # The observation passed has is_attack_injected=False and attack_type=None.
             t0 = time.perf_counter()
-            analysis = app_state.defender.analyze(modified_obs)
+            analysis = _app_state().defender.analyze(modified_obs)
             latency_ms = round((time.perf_counter() - t0) * 1000.0, 2)
 
             pred = analysis.decision.classification

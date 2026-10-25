@@ -16,6 +16,8 @@
 
 The authoritative distribution was downloaded directly from Zenodo into `data/raw/hohenheim/`:
 
+> **Reproducing the download:** run `python scripts/fetch_dataset.py`. It downloads `Preprocessed.zip`, verifies the MD5 below, extracts the nine sensor CSVs to `data/raw/hohenheim/preprocessed/`, and builds the SQLite cache. Neither the archive nor the extracted CSVs are committed to git (see `.gitignore`).
+
 | File Name | File Size (Bytes) | MD5 Checksum | Description |
 | :--- | :--- | :--- | :--- |
 | `Preprocessed.zip` | 5,819,018 | `952eb73cdbc03f5d6319aaf8607c98e6` | Archive containing preprocessed time series for 9 DHT22 sensors |

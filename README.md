@@ -189,11 +189,10 @@ Operators can switch data sources dynamically via the UI button or the API endpo
 
 ### Installation Steps
 
-1. **Clone the repository and switch to the feature branch:**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/sricharan24-byte/optimus.git
-   cd optimus
-   git checkout feature/real-dataset-defender
+   git clone https://github.com/durga-61/optimus-purple-team.git
+   cd optimus-purple-team
    ```
 
 2. **Create and activate a virtual environment:**
@@ -210,8 +209,13 @@ Operators can switch data sources dynamically via the UI button or the API endpo
    pip install -r requirements.txt
    ```
 
-4. **Prepare the Hohenheim database (already included in repository):**
-   The preprocessed synchronized database is located at `data/processed/hohenheim/hohenheim_synchronized.db`.
+4. **Prepare the Hohenheim dataset (one command, ~5.8 MB):**
+   ```bash
+   python scripts/fetch_dataset.py
+   ```
+   The script downloads `Preprocessed.zip` from [Zenodo record 15130001](https://zenodo.org/records/15130001), verifies its MD5 against [`data/DATASET_MANIFEST.json`](data/DATASET_MANIFEST.json), extracts the nine sensor CSVs to `data/raw/hohenheim/preprocessed/`, and builds the SQLite replay cache at `data/processed/hohenheim/hohenheim_synchronized.db`.
+
+   > The raw dataset and the SQLite cache are **not** committed to git (see [`.gitignore`](.gitignore)), so this step is required after a fresh clone. To skip the download entirely, run in simulator mode instead: `python run.py --source simulator` (or set `DATA_SOURCE_MODE=simulator`).
 
 ---
 
@@ -220,24 +224,31 @@ Operators can switch data sources dynamically via the UI button or the API endpo
 Start the Defender server:
 ```bash
 python run.py
+# Synthetic simulator instead of the real dataset:
+python run.py --source simulator
 # Or directly via uvicorn:
 uvicorn app.api.main:app --host 127.0.0.1 --port 8000
 ```
 
+`python run.py` checks the configured data source at startup and prints the exact remediation command if the dataset is missing.
+
 ### Access URLs
 - **Defender Security Portal (Primary UI):** [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- **Operations & Sensor Monitor (Raw Telemetry):** [http://127.0.0.1:8000/operations](http://127.0.0.1:8000/operations)
-- **Interactive OpenAPI Specification:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **Sensor Transmitter Portal:** [http://127.0.0.1:8000/transmitter](http://127.0.0.1:8000/transmitter)
+- **Attack Simulator Portal:** [http://127.0.0.1:8000/simulator](http://127.0.0.1:8000/simulator)
+- **Legacy operations route (307 → `/transmitter`):** [http://127.0.0.1:8000/operations](http://127.0.0.1:8000/operations)
+- **Interactive OpenAPI Specification:** [http://127.0.0.1:8000/api/docs](http://127.0.0.1:8000/api/docs)
 - **Audit Chain Verification Endpoint:** [http://127.0.0.1:8000/api/security/audit-chain/verify](http://127.0.0.1:8000/api/security/audit-chain/verify)
 
 ---
 
 ## 8. Running the Automated Test Suite
 
-Optimus comes with a comprehensive test suite of **308 automated tests**:
+Optimus comes with a comprehensive test suite:
 
 ```bash
-# Run all tests
+# Run all tests (dataset-dependent tests skip automatically when the
+# Hohenheim dataset has not been fetched)
 pytest tests/ -v
 
 # Run controlled attack experiment engine tests
@@ -248,14 +259,12 @@ pytest tests/test_data_sources.py tests/test_hohenheim_defender_integration.py -
 
 # Run frontend delivery and asset contract tests
 pytest tests/test_frontend.py -v
-
-# Run comparative baseline evaluation
-python evaluate.py
 ```
 
-All 308 tests pass with zero failures:
+The suite runs against the synthetic simulator by default, so it is deterministic and works on a fresh clone. With the real dataset prepared (`python scripts/fetch_dataset.py`), all 315 tests pass:
+
 ```text
-======================= 308 passed, 2 warnings in 9.46s =======================
+======================= 315 passed, 2 warnings in 13.50s =======================
 ```
 
 ---

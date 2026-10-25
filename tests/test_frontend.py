@@ -4,6 +4,7 @@ import re
 import pytest
 from fastapi.testclient import TestClient
 from app.api.main import app
+from tests.markers import requires_hohenheim
 
 
 @pytest.fixture(scope="module")
@@ -106,6 +107,7 @@ class TestFrontendPortal:
         assert "text/html" in response.headers.get("content-type", "")
         assert "LIVE OPERATIONS" in response.text or "Sensor Monitor" in response.text
 
+    @requires_hohenheim
     def test_data_flow_contract_real_dataset_integrity(self, client):
         """Verify backend API responses adhere to the non-fabrication contract for Hohenheim dataset."""
         # Ensure initial state in Hohenheim mode

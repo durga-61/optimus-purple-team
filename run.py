@@ -86,14 +86,46 @@ def run_defender_demo(steps: int = 5, seed: int = 42) -> None:
     print_analysis_box("Scene 3 & 4: Capacity Manipulation Attack Detected", attack_res)
 
 
+def preflight_data_source() -> None:
+    """Fail fast with actionable instructions when the configured dataset is missing."""
+    from app.data_sources.hohenheim import FETCH_COMMAND, SIMULATOR_COMMAND, hohenheim_dataset_available
+
+    if settings.DATA_SOURCE_MODE.lower().strip() != "hohenheim" or hohenheim_dataset_available():
+        return
+
+    print(
+        "\n"
+        "The University of Hohenheim dataset is not available yet.\n"
+        "\n"
+        "It is not vendored in git (raw data and the SQLite cache are gitignored).\n"
+        "Prepare it once (~5.8 MB, MD5-verified from Zenodo record 15130001):\n"
+        f"    {FETCH_COMMAND}\n"
+        "\n"
+        "Or start with the synthetic simulator instead:\n"
+        f"    {SIMULATOR_COMMAND}\n"
+        "    python run.py --source simulator\n"
+        "\n"
+        "Dataset provenance and licence: docs/DATASET_AND_PROVENANCE.md\n",
+        file=sys.stderr,
+    )
+    raise SystemExit(2)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run Information Security Platform")
     parser.add_argument("--demo", action="store_true", help="Run standalone terminal demonstration instead of HTTP API server")
+    parser.add_argument("--source", choices=["hohenheim", "simulator"], default=None, help="Data source to serve (default: DATA_SOURCE_MODE)")
     parser.add_argument("--host", type=str, default=settings.HOST, help="Host interface to bind server")
     parser.add_argument("--port", type=int, default=settings.PORT, help="Port to bind server")
     parser.add_argument("--steps", type=int, default=5, help="Number of baseline normal steps (for --demo)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     args = parser.parse_args()
+
+    if args.source:
+        settings.DATA_SOURCE_MODE = args.source
+
+    if not args.demo:
+        preflight_data_source()
 
     if args.demo:
         run_defender_demo(steps=args.steps, seed=args.seed)

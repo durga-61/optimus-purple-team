@@ -29,6 +29,7 @@ class TestHealthEndpoints:
         data = response.json()
         assert data["status"] == "healthy"
         assert data["service"] == "organization-security-platform"
+        assert data["data_source"] == "simulator"
         assert data["simulator"] == "running"
         assert data["defender"] == "ready"
         assert "timestamp" in data

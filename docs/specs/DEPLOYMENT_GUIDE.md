@@ -1,5 +1,17 @@
 # DEPLOYMENT GUIDE
 
+## Prerequisites: dataset and environment
+
+1. Install dependencies: `pip install -r requirements.txt`
+2. Prepare the real dataset (not vendored in git): `python scripts/fetch_dataset.py`
+   - Downloads `Preprocessed.zip` from Zenodo record 15130001, verifies its MD5 against `data/DATASET_MANIFEST.json`, extracts the sensor CSVs and builds the SQLite replay cache.
+   - No network access? Start in simulator mode instead: `DATA_SOURCE_MODE=simulator`.
+3. Copy `.env.example` to `.env` and set `OPERATOR_TOKEN`, `ATTACK_GATEWAY_TOKEN`, and `ATTACKER_API_KEY`.
+
+`python run.py` validates the configured data source at startup and exits with instructions when the dataset is missing.
+
+---
+
 ## Defender-Only Mode
 
 The application must run without any LLM API key.
@@ -20,22 +32,18 @@ The complete security system must function.
 Configure:
 
 ```text
-LLM_PROVIDER=openai
+ATTACKER_LLM_PROVIDER=openai
 OPENAI_API_KEY=
 ```
 
 or:
 
 ```text
-LLM_PROVIDER=anthropic
+ATTACKER_LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=
 ```
 
-Enable:
-
-```text
-ENABLE_AI_ATTACKER=true
-```
+Leave the API keys empty to use the deterministic (non-LLM) planner.
 
 Never commit actual API keys.
 

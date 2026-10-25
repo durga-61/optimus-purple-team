@@ -1,11 +1,20 @@
 """Global pytest fixtures and test environment configuration.
 
-Ensures deterministic test execution across both data source modes
-(University of Hohenheim real dataset playback and cold-storage warehouse simulator).
+Tests run against the synthetic simulator by default, so the suite is
+deterministic and works on a fresh clone where the real University of
+Hohenheim dataset has not been downloaded yet. Tests that genuinely need the
+real dataset are marked with ``tests.markers.requires_hohenheim`` and skip
+automatically when it is absent.
 """
 
-import pytest
-from app.api.state import app_state
+import os
+
+# Must be set before ``app.config`` is imported: the application default is
+# "hohenheim", which would try to open the (possibly missing) real dataset.
+os.environ["DATA_SOURCE_MODE"] = "simulator"
+
+import pytest  # noqa: E402
+from app.api.state import app_state  # noqa: E402
 
 
 @pytest.fixture(autouse=True)

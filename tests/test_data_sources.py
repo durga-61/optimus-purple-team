@@ -8,12 +8,21 @@ import os
 from pathlib import Path
 import pytest
 
+from app.config import settings
 from app.data_sources.base import BaseDataSource
-from app.data_sources.hohenheim import HohenheimDataSource, DATASET_METADATA, SENSOR_IDS
+from app.data_sources.hohenheim import (
+    DATASET_METADATA,
+    SENSOR_IDS,
+    DatasetUnavailableError,
+    HohenheimDataSource,
+    hohenheim_dataset_available,
+)
 from app.data_sources.repository import SimulatorDataSourceAdapter, create_data_source
 from app.simulator.models import WarehouseObservation
+from tests.markers import requires_hohenheim
 
 
+@requires_hohenheim
 class TestHohenheimDataSource:
     """Test suite for the real-recorded University of Hohenheim dataset adapter."""
 
@@ -148,3 +157,21 @@ class TestHohenheimDataSource:
         sim_obs = sim_ds.get_current_observation()
         assert sim_obs.inventory is not None
         assert sim_obs.capacity is not None
+
+
+class TestDatasetAvailability:
+    """Verify a missing dataset fails with actionable, non-cryptic instructions."""
+
+    def test_missing_dataset_raises_actionable_error(self, tmp_path):
+        with pytest.raises(DatasetUnavailableError) as exc_info:
+            HohenheimDataSource(db_path=str(tmp_path / "missing.db"), raw_dir=str(tmp_path / "raw"))
+
+        message = str(exc_info.value)
+        assert "scripts/fetch_dataset.py" in message
+        assert "DATA_SOURCE_MODE=simulator" in message
+        assert "docs/DATASET_AND_PROVENANCE.md" in message
+
+    def test_availability_helper_reports_missing_paths(self, monkeypatch, tmp_path):
+        monkeypatch.setattr(settings, "HOHENHEIM_DB_PATH", str(tmp_path / "missing.db"))
+        monkeypatch.setattr(settings, "HOHENHEIM_RAW_DIR", str(tmp_path / "raw"))
+        assert hohenheim_dataset_available() is False

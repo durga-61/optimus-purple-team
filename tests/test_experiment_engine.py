@@ -19,6 +19,10 @@ from app.data_sources.hohenheim import HohenheimDataSource
 from app.experiments.engine import ExperimentEngine, experiment_engine
 from app.experiments.models import AttackConfiguration
 from app.experiments.scenarios import SCENARIOS_CATALOG, apply_attack
+from tests.markers import requires_hohenheim
+
+# Every experiment run replays the real dataset, so this module is dataset-dependent.
+pytestmark = requires_hohenheim
 
 
 @pytest.fixture

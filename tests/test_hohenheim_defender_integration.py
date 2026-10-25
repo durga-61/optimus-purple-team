@@ -8,8 +8,10 @@ import pytest
 from app.data_sources.hohenheim import HohenheimDataSource
 from app.defender.service import DefenderService
 from app.simulator.models import WarehouseObservation
+from tests.markers import requires_hohenheim
 
 
+@requires_hohenheim
 class TestHohenheimDefenderIntegration:
     """End-to-end integration test suite for Hohenheim dataset and DefenderService."""
 

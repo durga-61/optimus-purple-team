@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import sqlite3
 import threading
-from typing import Any, Deque, Dict, List, Optional
+from typing import Any, Deque, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -40,6 +40,36 @@ DATASET_METADATA = {
 
 SENSOR_IDS = [f"SENSOR0{i}" for i in range(1, 10)]
 
+FETCH_COMMAND = "python scripts/fetch_dataset.py"
+SIMULATOR_COMMAND = "DATA_SOURCE_MODE=simulator python run.py"
+
+
+class DatasetUnavailableError(RuntimeError):
+    """Raised when neither the Hohenheim SQLite cache nor the raw preprocessed CSVs exist."""
+
+
+def project_root() -> Path:
+    """Return the repository root directory."""
+    return Path(__file__).resolve().parent.parent.parent
+
+
+def dataset_paths() -> Tuple[Path, Path]:
+    """Return the resolved (SQLite cache path, raw data directory) for the Hohenheim dataset."""
+    root = project_root()
+    return root / settings.HOHENHEIM_DB_PATH, root / settings.HOHENHEIM_RAW_DIR
+
+
+def hohenheim_dataset_available() -> bool:
+    """True if the dataset can be used without downloading anything.
+
+    Available means either the built SQLite cache exists, or the preprocessed
+    per-sensor CSVs are present and the cache can be built automatically.
+    """
+    db_path, raw_dir = dataset_paths()
+    if db_path.exists() and db_path.stat().st_size > 100_000:
+        return True
+    return (raw_dir / "preprocessed" / "SENSOR01_preprocessed.csv").exists()
+
 
 class HohenheimDataSource(BaseDataSource):
     """Deterministic playback adapter for the 9-sensor Hohenheim cold storage dataset."""
@@ -54,9 +84,9 @@ class HohenheimDataSource(BaseDataSource):
         self.history_size = history_size
         self.history: Deque[WarehouseObservation] = collections.deque(maxlen=history_size)
 
-        project_root = Path(__file__).resolve().parent.parent.parent
-        self.db_path = Path(db_path) if db_path else project_root / settings.HOHENHEIM_DB_PATH
-        self.raw_dir = Path(raw_dir) if raw_dir else project_root / settings.HOHENHEIM_RAW_DIR
+        root = project_root()
+        self.db_path = Path(db_path) if db_path else root / settings.HOHENHEIM_DB_PATH
+        self.raw_dir = Path(raw_dir) if raw_dir else root / settings.HOHENHEIM_RAW_DIR
         self.warehouse_id = settings.WAREHOUSE_ID
 
         self._ensure_database_ready()
@@ -86,8 +116,18 @@ class HohenheimDataSource(BaseDataSource):
         logger.info(f"Hohenheim database not found at {self.db_path}. Auto-building from raw CSVs...")
         prep_dir = self.raw_dir / "preprocessed"
         if not prep_dir.exists():
-            raise FileNotFoundError(
-                f"Cannot build Hohenheim database: Preprocessed directory not found at {prep_dir}."
+            raise DatasetUnavailableError(
+                "The University of Hohenheim cold-storage dataset is not available.\n"
+                f"  Missing: {prep_dir}\n"
+                f"  SQLite cache: {self.db_path}\n"
+                "\n"
+                "Fetch it (~5.8 MB, MD5-verified from Zenodo record 15130001):\n"
+                f"  {FETCH_COMMAND}\n"
+                "\n"
+                "Or run with the synthetic simulator instead of the real dataset:\n"
+                f"  {SIMULATOR_COMMAND}\n"
+                "\n"
+                "Provenance and licensing: docs/DATASET_AND_PROVENANCE.md\n"
             )
 
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
