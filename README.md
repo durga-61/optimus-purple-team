@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
-[![Tests Passing](https://img.shields.io/badge/tests-313%20passed-success.svg)](tests/)
+[![Tests Passing](https://img.shields.io/badge/tests-317%20passed-success.svg)](tests/)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 > **Academic Project Identity**
@@ -261,24 +261,34 @@ pytest tests/test_data_sources.py tests/test_hohenheim_defender_integration.py -
 pytest tests/test_frontend.py -v
 ```
 
-The suite runs against the synthetic simulator by default, so it is deterministic and works on a fresh clone. With the real dataset prepared (`python scripts/fetch_dataset.py`), all 315 tests pass:
+The suite runs against the synthetic simulator by default, so it is deterministic and works on a fresh clone. With the real dataset prepared (`python scripts/fetch_dataset.py`), all 317 tests pass:
 
 ```text
-======================= 315 passed, 2 warnings in 13.50s =======================
+======================= 317 passed, 2 warnings in 13.18s =======================
 ```
 
 ---
 
-## 9. Comparative Benchmark Results
+## 9. Final Comparative Benchmark Results (Review 3)
 
-| Metric | Rule-Only Baseline | ML-Only Baseline | Multi-Layer Defender (Optimus) |
-| :--- | :--- | :--- | :--- |
-| **Accuracy** | 76.5% | 82.0% | **94.8%** |
-| **Precision** | 88.0% | 79.5% | **96.2%** |
-| **Detection Rate (Recall)** | 62.0% | 78.0% | **93.5%** |
-| **F1 Score** | 0.728 | 0.787 | **0.948** |
-| **False Positive Rate** | 3.2% | 8.5% | **1.8%** |
-| **Mean Detection Latency**| 3.4 steps | 2.8 steps | **1.2 steps** |
+Held-out test split: 2,400 normal + 9,600 attack observations (six classes, 1,600 each), seed 42. Metrics are from the canonical Review 3 run; full artifacts are in [`evaluation_results/final_benchmark/`](evaluation_results/final_benchmark/) and the advanced run is in [`evaluation_results/`](evaluation_results/).
+
+| System | Accuracy | Precision | Recall | F1 | FPR | Evasion |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| OPTIMUS static | 81.54% | 100.00% | 76.93% | 0.8696 | 0.00% | 23.07% |
+| **OPTIMUS + mined invariants** | **95.52%** | **100.00%** | **94.40%** | **0.9712** | **0.00%** | **5.60%** |
+| One-Class SVM | 46.67% | 100.00% | 33.33% | 0.5000 | 0.00% | 66.67% |
+| PCA reconstruction | 79.99% | 100.00% | 74.99% | 0.8571 | 0.00% | 25.01% |
+
+Static episode detection is 99.17% (476/480) at 0.06-step mean latency. Per-class recall is 100% for capacity, inventory, sensor-spoofing, and multi-source attacks; replay is 56.81% static / 66.37% with mined invariants; coordinated-weak is 4.75% static / 100% with mined invariants. Replay remains 100% evasive at full strength for every detector and requires cryptographic freshness, not passive analytics.
+
+> **Real-data calibration caveat.** The numbers above use the synthetic ERP-linked benchmark, where the detectors are calibrated to the simulated 4.2 °C cold room. On 600 unmodified observations from the real Hohenheim dataset, the current envelope/spatial rules produced 504 alert states (84.0%), first at step 93. The causes and remediation plan are in [`docs/REVIEW3_FINAL_REPORT.md`](docs/REVIEW3_FINAL_REPORT.md) §2.10 and §4.1. Use step 30 (or the simulator mode) for the live demo.
+
+### Review 3 additions
+
+- **Real-world incident case study:** the October 2026 French supermarket refrigeration-controller campaign, sourced to CERT-FR advisory **CERTFR-2026-ALE-012**. See [`docs/REVIEW3_FINAL_REPORT.md`](docs/REVIEW3_FINAL_REPORT.md) §3.
+- **Scaled-down attack on the working system:** `python scripts/review3_case_study.py` writes [`evaluation_results/review3_case_study.json`](evaluation_results/review3_case_study.json) and [`docs/REVIEW3_CASE_STUDY_RESULTS.md`](docs/REVIEW3_CASE_STUDY_RESULTS.md). A sustained +25 °C runaway is detected; a +1.5 °C in-envelope change, a replay, and a forced dropout are missed.
+- **Reproduction:** `python -m app.evaluation.cli --split test --output-dir evaluation_results/final_benchmark` and `python -c "from app.evaluation.advanced_experiments import run_all_experiments; run_all_experiments(...)"`. All seeds, split hashes, and artifact checksums are recorded.
 
 ---
 
@@ -305,4 +315,7 @@ The suite runs against the synthetic simulator by default, so it is deterministi
 - [Threat and Security Model](docs/SECURITY_MODEL.md)
 - [Testing and Evaluation Methodology](docs/TESTING_AND_EVALUATION.md)
 - [Known Limitations and Operational Assumptions](docs/KNOWN_LIMITATIONS.md)
-- [Implementation and Review Results](docs/REVIEW2_IMPLEMENTATION_AND_RESULTS.md)
+- [Review 2 Implementation and Results](docs/REVIEW2_IMPLEMENTATION_AND_RESULTS.md)
+- [Review 3 Final Report (Markdown)](docs/REVIEW3_FINAL_REPORT.md)
+- [Review 3 Final Report (PDF)](docs/REVIEW3_FINAL_REPORT.pdf)
+- [Review 3 Scaled-Down Case-Study Results](docs/REVIEW3_CASE_STUDY_RESULTS.md)

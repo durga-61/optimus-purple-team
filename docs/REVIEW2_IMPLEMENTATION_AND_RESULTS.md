@@ -1,5 +1,7 @@
 # OPTIMUS Review 2 — Implementation and Results
 
+> **Historical document.** This is the Review 2 report. The final Review 3 report, including the real Hohenheim data path, the three-portal system, the 317-test run, and the French refrigeration case study, is [`docs/REVIEW3_FINAL_REPORT.md`](REVIEW3_FINAL_REPORT.md). The core benchmark metrics below are reproduced in Review 3; the real-data calibration limitation is new.
+
 **Project:** Cold-Storage Warehouse Cybersecurity Monitoring & AI Attack Simulation Platform  
 **Facility:** Simulated cold-storage warehouse W01  
 **Report date:** 2026-10-20  

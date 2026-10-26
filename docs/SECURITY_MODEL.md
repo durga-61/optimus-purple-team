@@ -52,3 +52,15 @@ A fundamental requirement in physical security monitoring is avoiding false alar
 2. **Sensor Dropouts and Communication Faults:**
    - Physical DHT22 sensors occasionally experience communication bus dropouts resulting in missing values (`NaN`).
    - The platform tracks sensor availability as a **Data Quality Metric** rather than classifying sensor dropouts as malicious cyberattacks.
+
+---
+
+## 6. Review 3 Threat-Model Extension
+
+The October 2026 French refrigeration-controller campaign (CERT-FR `CERTFR-2026-ALE-012`) exposed three gaps in the Review 1 model:
+
+1. **Actuator/command integrity.** The protected asset must include refrigeration setpoints, schedules, and configuration commands, not only telemetry and ledgers.
+2. **Controller compromise.** The trust assumption that the Defender runtime/data source is authentic fails when the controller itself is the compromised component. The system may receive internally consistent but false data.
+3. **Exposure and fleet correlation.** Internet-facing management interfaces and cross-store campaigns are enterprise-level risks that a single-facility monitor cannot see.
+
+The Review 3 case study and the scaled-down attack results are in [`docs/REVIEW3_FINAL_REPORT.md`](REVIEW3_FINAL_REPORT.md) §3. The added controls are command-level audit, signed telemetry/device attestation, network segmentation, and cross-site correlation.

@@ -2,48 +2,27 @@
 
 ## 1. Test Suite Architecture
 
-The repository contains **291 automated tests** covering every layer of the Defender architecture, data source adapters, purple-team evaluation pipelines, and security controls:
+The repository contains **317 automated tests** covering every layer of the Defender architecture, data source adapters, purple-team evaluation pipelines, and security controls:
 
 ```text
 tests/
-├── test_adaptive_fusion.py              (17 tests: bounded simplex projection, FPR ceiling calibration)
-├── test_advanced_reproducibility.py     (4 tests: deterministic hashes, audit lifecycle, tamper detection)
-├── test_adversarial_workflow_e2e.py     (12 tests: proposal -> approval -> gateway execution)
-├── test_api.py                          (20 tests: REST endpoints, health, warehouse, scenarios, alerts)
-├── test_attack_matrix.py                (8 tests: attack target validation and boundary enforcement)
-├── test_attacker_app.py                 (10 tests: isolated attacker app behavior)
-├── test_attacker_gateway.py             (20 tests: token auth, rate limiting, data restriction)
-├── test_attacker_llm.py                 (6 tests: attacker LLM heuristics and proposals)
-├── test_audit_chain.py                  (10 tests: SHA-256 hash chaining, genesis, tamper detection)
-├── test_baselines.py                    (6 tests: Rule-only, ML-only, and Defender baseline comparisons)
-├── test_browser_auth.py                 (5 tests: operator cookie sessions and role checks)
-├── test_data_sources.py                 (9 tests: HohenheimDataSource, 9 sensors, SQLite, metadata)
-├── test_dataset_generator.py            (8 tests: synthetic dataset generation and seeds)
-├── test_decision.py                     (10 tests: bounded weights, Tier 1/2/3 rules, safety envelope)
-├── test_defender_service.py             (12 tests: complete DefenderService pipeline)
-├── test_evaluation_metrics.py           (7 tests: confusion matrix, precision, recall, F1, detection latency)
-├── test_evasion_frontier.py             (6 tests: adversarial evasion frontier curve generation)
-├── test_frontend.py                     (8 tests: HTML/JS DOM binding and UI rendering)
-├── test_fusion_integration.py           (8 tests: multi-layer score fusion)
-├── test_hardening.py                    (16 tests: proposal generation, FPR checks, rollback, audit)
-├── test_hohenheim_defender_integration.py (8 tests: real dataset end-to-end through DefenderService)
-├── test_invariant_miner.py              (12 tests: candidate discovery, validation, activation)
-├── test_ml_detector.py                  (5 tests: dual-mode IsolationForest detection)
-├── test_operations.py                   (9 tests: operations portal DOM, history, live streaming)
-├── test_reset_behavior.py               (5 tests: granular state reset)
-├── test_security_protection.py          (12 tests: rate limiting, token gating, path isolation)
-├── test_semantic.py                     (14 tests: C1, C2, C3, C4 constraint evaluations)
-├── test_simulator.py                    (18 tests: warehouse simulator physical dynamics)
-├── test_structural.py                   (3 tests: NetworkX graph correlation and affected nodes)
-├── test_target_action_matrix.py         (9 tests: target-action precision)
-└── test_temporal.py                     (3 tests: EWMA decay and persistence accumulation)
+├── test_defender_service.py, test_decision.py, test_semantic.py,
+│   test_temporal.py, test_structural.py, test_ml_detector.py
+├── test_audit_chain.py, test_hardening.py, test_adaptive_fusion.py,
+│   test_invariant_miner.py, test_baselines.py, test_evasion_frontier.py
+├── test_experiment_engine.py, test_attack_matrix.py, test_target_action_matrix.py
+├── test_data_sources.py, test_hohenheim_defender_integration.py
+├── test_api.py, test_frontend.py, test_operations.py, test_security_protection.py
+├── test_attacker_app.py, test_attacker_gateway.py, test_attacker_llm.py
+└── ... (the full suite is 317 tests; the count grows as modules are added)
 ```
+
 
 ---
 
 ## 2. Test Execution and Verification
 
-All 291 tests execute cleanly in under 10 seconds:
+All 317 tests execute cleanly in under 15 seconds:
 
 ```bash
 # Run complete test suite
@@ -53,14 +32,15 @@ pytest tests/ -v
 pytest tests/test_data_sources.py tests/test_hohenheim_defender_integration.py -v
 
 # Run comparative baseline benchmarks
-python evaluate.py
+python -m app.evaluation.cli --split test --output-dir evaluation_results/final_benchmark
 ```
 
 ### Verified Test Outcome
-- **Total Tests Collected:** 291
-- **Passed:** 291
+- **Total Tests Collected:** 317
+- **Passed:** 317
 - **Failed:** 0
-- **Execution Time:** ~9.0 seconds
+- **Warnings:** 2 (non-blocking)
+- **Execution Time:** ~13.2 seconds
 
 ---
 
@@ -68,16 +48,17 @@ python evaluate.py
 
 The project evaluates detection effectiveness across three distinct detection paradigms using standardized test episodes:
 
-| Metric | Rule-Only Baseline | ML-Only Baseline (Isolation Forest) | Multi-Layer Defender (Optimus) |
-| :--- | :--- | :--- | :--- |
-| **Accuracy** | 76.5% | 82.0% | **94.8%** |
-| **Precision** | 88.0% | 79.5% | **96.2%** |
-| **Recall (Detection Rate)** | 62.0% | 78.0% | **93.5%** |
-| **F1 Score** | 0.728 | 0.787 | **0.948** |
-| **False Positive Rate (FPR)**| 3.2% | 8.5% | **1.8%** |
-| **Mean Detection Latency** | 3.4 steps | 2.8 steps | **1.2 steps** |
+Held-out test split: 2,400 normal + 9,600 attack observations (six classes, 1,600 each), seed 42. These are the canonical Review 3 numbers; see `docs/REVIEW3_FINAL_REPORT.md` §2 for the full tables.
+
+| System | Accuracy | Precision | Recall | F1 | FPR | Evasion |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| OPTIMUS static | 81.54% | 100.00% | 76.93% | 0.8696 | 0.00% | 23.07% |
+| **OPTIMUS + mined invariants** | **95.52%** | **100.00%** | **94.40%** | **0.9712** | **0.00%** | **5.60%** |
+| One-Class SVM | 46.67% | 100.00% | 33.33% | 0.5000 | 0.00% | 66.67% |
+| PCA reconstruction | 79.99% | 100.00% | 74.99% | 0.8571 | 0.00% | 25.01% |
 
 ### Key Findings
-1. **Rule-Only Limitations:** Rule-only baselines successfully detect large C1/C2 discrepancies but fail against stealthy coordinated manipulation and subtle sensor drifts.
-2. **ML-Only Limitations:** Unsupervised Isolation Forest flags unusual multivariate combinations but suffers from high false-positive rates during physical door opening events.
-3. **Multi-Layer Superiority:** The multi-layer Defender achieves the highest F1 score (0.948) and lowest false positive rate (1.8%) by combining semantic certainty, structural dependency correlation, and temporal persistence.
+1. **No single layer is sufficient:** ML-only recall is 5.17%, semantic-only is 61.01%, and the joint decision is the only configuration that combines 76.93% recall with 0.00% FPR.
+2. **Invariants close the coordinated-weak gap:** recall rises to 94.40% and F1 to 0.9712 while FPR stays at zero; replay remains the hardest class (56.81% static / 66.37% with invariants).
+3. **Replay is a provenance problem:** replay evasion is 100% at full strength for every detector. Cryptographic freshness is required; passive analytics cannot fix it.
+4. **Real-data calibration is open:** on 600 unmodified Hohenheim observations the current envelope/spatial rules produced 84.0% alert states. Use the synthetic benchmark for the controlled comparison and a stable step (e.g., step 30) for the real-data demo.

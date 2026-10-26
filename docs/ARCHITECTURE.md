@@ -33,7 +33,7 @@ flowchart TD
         ML --> STRUCT
         STRUCT --> TEMP
 
-        FUSION["6. Joint Decision Fusion<br/>(Bounded Bayesian weights, 3-tier rules)"]
+        FUSION["6. Joint Decision Fusion<br/>(Bounded weights, tiered rules)"]
         ML --> FUSION
         SEM --> FUSION
         TEMP --> FUSION
@@ -82,7 +82,7 @@ The application abstracts observation generation through the `BaseDataSource` co
 ### Layer 1: Semantic Invariant Verification
 Enforces deterministic relational and physical invariants:
 - **C1 (Capacity Consistency):** `inventory + free_capacity == total_capacity` ($\pm 0.5\text{t}$).
-- **C2 (Inventory Flow Consistency):** $I_t == I_{t-1} + \text{inbound}_t - \text{outbound}_t$ ($\pm 0.2\text{t}$).
+- **C2 (Inventory Flow Consistency):** $I_t == I_{t-1} + \text{inbound}_t - \text{outbound}_t$ ($\pm 0.5\text{t}$).
 - **C3 (Historical Operating Envelope):** Evaluates temperature and humidity against facility envelopes:
   - University of Hohenheim cold room: $4^\circ\text{C}$ to $16^\circ\text{C}$ (mean $11.3^\circ\text{C}$).
   - Synthetic simulator cold storage: $1.0^\circ\text{C}$ to $7.0^\circ\text{C}$.
@@ -108,14 +108,14 @@ Tracks temporal persistence and recurrence:
 
 ### Layer 5: Joint Security Decision Fusion
 Combines layer outputs using bounded normalized weights:
-$$w_{\text{semantic}} = 0.40, \quad w_{\text{ml}} = 0.25, \quad w_{\text{temporal}} = 0.20, \quad w_{\text{structural}} = 0.15$$
+$$w_{\text{semantic}} = 0.40, \quad w_{\text{temporal}} = 0.25, \quad w_{\text{structural}} = 0.20, \quad w_{\text{ml}} = 0.15$$
 - **Rule Hierarchy:**
   - **Tier 1 (Hard Invariants):** Hard C1/C2 violations immediately flag `TAMPERING`.
   - **Tier 2 (Structural Compromise):** Multi-source correlations flag `MULTI_SOURCE` attack.
-  - **Tier 3 (Composite Risk Score):** Evaluates normalized risk score $\in [0, 100]$:
-    - $\ge 75.0$: `TAMPERING` (Critical)
-    - $\ge 50.0$: `SUSPICIOUS` (Warning)
-    - $< 50.0$: `NORMAL` (Operational)
+  - **Tier 3 (Composite Risk Score):** Evaluates the normalized risk score $\in [0, 1]$:
+    - $\ge 0.40$: `POTENTIAL_ATTACK` when corroborated by temporal escalation, or `SUSPICIOUS` when not yet corroborated
+    - $\ge 0.20$: `SUSPICIOUS` (triage)
+    - $< 0.20$: `NORMAL` / `LOW` (operational, with residual risk explained)
 
 ---
 

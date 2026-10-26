@@ -10,6 +10,9 @@
 - **Publication Date:** 2024
 - **Academic Context:** Monitored cold-storage room facility operating at 4°C to 16°C nominal range with experimental product loading and door opening activities.
 
+> [!NOTE]
+> SENSOR01 is the cold-room **entry/ambient** channel. Early records before the `Begin` action are around 21 °C, and individual sensors show wider ranges than the 4–16 °C nominal cold-room envelope. The platform currently uses SENSOR01 as the primary `temperature` field; this is the main cause of the real-data alert-rate limitation documented in `docs/REVIEW3_FINAL_REPORT.md` §2.10 and §4.1.
+
 ---
 
 ## 2. Ingested Authoritative Files and Cryptographic Checksums
